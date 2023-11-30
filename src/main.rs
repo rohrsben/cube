@@ -217,15 +217,10 @@ impl Cube {
     // returns a 'solved' cube
     fn reference_cube() -> Self {
         let front =  Face::from(Color::White);
-
         let top =    Face::from(Color::Blue);
-
         let right =  Face::from(Color::Red);
-
         let bottom = Face::from(Color::Green);
-
         let left =   Face::from(Color::Orange);
-
         let back =   Face::from(Color::Yellow);
 
         Self {
@@ -847,7 +842,7 @@ fn runner(args: &[String]) {
         let finished = cube.check();
         if finished {
             let total = cube.moves + cube.rotations;
-            println!("Finished in {} moves, across {} repititions. (along with {} rotations, for a total of {} actions)", cube.moves, count, cube.rotations, total);
+            println!("Finished in {} moves, across {} repetitions. (along with {} rotations, for a total of {} actions)", cube.moves, count, cube.rotations, total);
             break;
         }
     }
