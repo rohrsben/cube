@@ -322,31 +322,31 @@ impl Cube {
         // the back face in the code... truly a momentous occasion worth
         //  commemorating in a comment
         let new_back = Face {
-            top_left: self.bottom_face.bottom_left.replicate(),
+            top_left:   self.bottom_face.bottom_left.replicate(),
             top_middle: self.bottom_face.bottom_middle.replicate(),
-            top_right: self.bottom_face.bottom_right.replicate(),
+            top_right:  self.bottom_face.bottom_right.replicate(),
 
-            middle_left: self.bottom_face.middle_left.replicate(),
+            middle_left:   self.bottom_face.middle_left.replicate(),
             middle_middle: self.bottom_face.middle_middle.replicate(),
-            middle_right: self.bottom_face.middle_right.replicate(),
+            middle_right:  self.bottom_face.middle_right.replicate(),
 
-            bottom_left: self.bottom_face.top_left.replicate(),
+            bottom_left:   self.bottom_face.top_left.replicate(),
             bottom_middle: self.bottom_face.top_middle.replicate(),
-            bottom_right: self.bottom_face.top_right.replicate(),
+            bottom_right:  self.bottom_face.top_right.replicate(),
         };
 
         let new_top = Face {
-            top_left: self.back_face.bottom_left.replicate(),
+            top_left:   self.back_face.bottom_left.replicate(),
             top_middle: self.back_face.bottom_middle.replicate(),
-            top_right: self.back_face.bottom_right.replicate(),
+            top_right:  self.back_face.bottom_right.replicate(),
 
-            middle_left: self.back_face.middle_left.replicate(),
+            middle_left:   self.back_face.middle_left.replicate(),
             middle_middle: self.back_face.middle_middle.replicate(),
-            middle_right: self.back_face.middle_right.replicate(),
+            middle_right:  self.back_face.middle_right.replicate(),
 
-            bottom_left: self.back_face.top_left.replicate(),
+            bottom_left:   self.back_face.top_left.replicate(),
             bottom_middle: self.back_face.top_middle.replicate(),
-            bottom_right: self.back_face.top_right.replicate(),
+            bottom_right:  self.back_face.top_right.replicate(),
         };
 
         // now we just set the new faces
@@ -372,61 +372,61 @@ impl Cube {
 
         // the rotations
         let new_top = Face {
-            top_left: self.top_face.bottom_left.replicate(),
+            top_left:   self.top_face.bottom_left.replicate(),
             top_middle: self.top_face.middle_left.replicate(),
-            top_right: self.top_face.top_left.replicate(),
+            top_right:  self.top_face.top_left.replicate(),
 
-            middle_left: self.top_face.bottom_middle.replicate(),
+            middle_left:   self.top_face.bottom_middle.replicate(),
             middle_middle: self.top_face.middle_middle.replicate(),
-            middle_right: self.top_face.top_middle.replicate(),
+            middle_right:  self.top_face.top_middle.replicate(),
 
-            bottom_left: self.top_face.bottom_right.replicate(),
+            bottom_left:   self.top_face.bottom_right.replicate(),
             bottom_middle: self.top_face.middle_right.replicate(),
-            bottom_right: self.top_face.top_right.replicate(),
+            bottom_right:  self.top_face.top_right.replicate(),
         };
 
         let new_bottom = Face {
-            top_left: self.bottom_face.top_right.replicate(),
+            top_left:   self.bottom_face.top_right.replicate(),
             top_middle: self.bottom_face.middle_right.replicate(),
-            top_right: self.bottom_face.bottom_right.replicate(),
+            top_right:  self.bottom_face.bottom_right.replicate(),
 
-            middle_left: self.bottom_face.top_middle.replicate(),
+            middle_left:   self.bottom_face.top_middle.replicate(),
             middle_middle: self.bottom_face.middle_middle.replicate(),
-            middle_right: self.bottom_face.bottom_middle.replicate(),
+            middle_right:  self.bottom_face.bottom_middle.replicate(),
 
-            bottom_left: self.bottom_face.top_left.replicate(),
+            bottom_left:   self.bottom_face.top_left.replicate(),
             bottom_middle: self.bottom_face.middle_left.replicate(),
-            bottom_right: self.bottom_face.bottom_left.replicate(),
+            bottom_right:  self.bottom_face.bottom_left.replicate(),
         };
 
 
         // the annoying ones
         let new_back = Face {
-            top_left: self.left_face.top_right.replicate(),
+            top_left:   self.left_face.top_right.replicate(),
             top_middle: self.left_face.top_middle.replicate(),
-            top_right: self.left_face.top_left.replicate(),
+            top_right:  self.left_face.top_left.replicate(),
 
-            middle_left: self.left_face.middle_right.replicate(),
+            middle_left:   self.left_face.middle_right.replicate(),
             middle_middle: self.left_face.middle_middle.replicate(),
-            middle_right: self.left_face.middle_left.replicate(),
+            middle_right:  self.left_face.middle_left.replicate(),
 
-            bottom_left: self.left_face.bottom_right.replicate(),
+            bottom_left:   self.left_face.bottom_right.replicate(),
             bottom_middle: self.left_face.bottom_middle.replicate(),
-            bottom_right: self.left_face.bottom_left.replicate(),
+            bottom_right:  self.left_face.bottom_left.replicate(),
         };
 
         let new_right = Face {
-            top_left: self.back_face.top_right.replicate(),
+            top_left:   self.back_face.top_right.replicate(),
             top_middle: self.back_face.top_middle.replicate(),
-            top_right: self.back_face.top_left.replicate(),
+            top_right:  self.back_face.top_left.replicate(),
 
-            middle_left: self.back_face.middle_right.replicate(),
+            middle_left:   self.back_face.middle_right.replicate(),
             middle_middle: self.back_face.middle_middle.replicate(),
-            middle_right: self.back_face.middle_left.replicate(),
+            middle_right:  self.back_face.middle_left.replicate(),
 
-            bottom_left: self.back_face.bottom_right.replicate(),
+            bottom_left:   self.back_face.bottom_right.replicate(),
             bottom_middle: self.back_face.bottom_middle.replicate(),
-            bottom_right: self.back_face.bottom_left.replicate(),
+            bottom_right:  self.back_face.bottom_left.replicate(),
         };
 
         self.front_face.set(new_front);
@@ -455,50 +455,6 @@ impl Cube {
         self.z_worker();
     }
     
-    // these are the ones that increment rotation count and set latest move code
-    fn x_rotation(&mut self) {
-        self.x_worker();
-
-        self.rotations += 1;
-        self.most_recent_move = String::from("X");
-    }
-
-    fn x_prime_rotation(&mut self) {
-        self.x_prime_worker();
-
-        self.rotations += 1;
-        self.most_recent_move = String::from("X'")
-    }
-
-    fn y_rotation(&mut self) {
-        self.y_worker();
-
-        self.rotations += 1;
-        self.most_recent_move = String::from("Y")
-    }
-
-    fn y_prime_rotation(&mut self) {
-        self.y_prime_worker();
-
-        self.rotations += 1;
-        self.most_recent_move = String::from("Y'")
-    }
-
-    fn z_rotation(&mut self) {
-        self.z_worker();
-
-        self.rotations += 1;
-        self.most_recent_move = String::from("Z");
-    }
-
-    fn z_prime_rotation(&mut self) {
-        self.z_prime_worker();
-
-        self.rotations += 1;
-        self.most_recent_move = String::from("Z'");
-    }
-
-
     // slice worker functions
     fn equatorial_worker(&mut self) {
         let mut new_front = self.front_face.get();
@@ -556,50 +512,6 @@ impl Cube {
         self.middle_prime_worker();
         self.y_prime_worker();
     }
-
-    // these are the ones that increment rotation count and set latest move code
-    fn equatorial(&mut self){
-        self.equatorial_worker();
-
-        self.moves += 1;
-        self.most_recent_move = String::from("E")
-    }
-
-    fn equatorial_prime(&mut self) {
-        self.equatorial_prime_worker();
-
-        self.moves += 1;
-        self.most_recent_move = String::from("E'")
-    }
-
-    fn middle(&mut self) {
-        self.middle_worker();
-
-        self.moves += 1;
-        self.most_recent_move = String::from("M")
-    }
-
-    fn middle_prime(&mut self) {
-        self.middle_prime_worker();
-
-        self.moves += 1;
-        self.most_recent_move = String::from("M'")
-    }
-
-    fn standing(&mut self) {
-        self.standing_worker();
-
-        self.moves += 1;
-        self.most_recent_move = String::from("S")
-    }
-
-    fn standing_prime(&mut self){
-        self.standing_prime_worker();
-
-        self.moves += 1;
-        self.most_recent_move = String::from("S'")
-    }
-
 
     // face worker functions
     fn front_worker(&mut self) {
@@ -713,91 +625,6 @@ impl Cube {
         self.front_prime_worker();
         self.x_prime_worker();
     }
-
-    // these are the ones that increment rotation count and set latest move code
-    fn front(&mut self) {
-        self.front_worker();
-
-        self.moves += 1;
-        self.most_recent_move = String::from("F");
-    }
-
-    fn front_prime(&mut self) {
-        self.front_prime_worker();
-
-        self.moves += 1;
-        self.most_recent_move = String::from("F'");
-    }
-
-    fn upper(&mut self) {
-        self.upper_worker();
-
-        self.moves += 1;
-        self.most_recent_move = String::from("U");
-    }
-
-    fn upper_prime(&mut self) {
-        self.upper_prime_worker();
-
-        self.moves += 1;
-        self.most_recent_move = String::from("U'");
-    }
-
-    fn left(&mut self) {
-        self.left_worker();
-
-        self.moves += 1;
-        self.most_recent_move = String::from("L");
-    }
-
-    fn left_prime(&mut self) {
-        self.left_prime_worker();
-
-        self.moves += 1;
-        self.most_recent_move = String::from("L'");
-    }
-
-    fn right(&mut self) {
-        self.right_worker();
-
-        self.moves += 1;
-        self.most_recent_move = String::from("R");
-    }
-
-    fn right_prime(&mut self) {
-        self.right_prime_worker();
-
-        self.moves += 1;
-        self.most_recent_move = String::from("R'");
-    }
-
-    fn back(&mut self) {
-        self.back_worker();
-
-        self.moves += 1;
-        self.most_recent_move = String::from("B");
-    }
-
-    fn back_prime(&mut self) {
-        self.back_prime_worker();
-
-        self.moves += 1;
-        self.most_recent_move = String::from("B'");
-    }
-
-    fn down(&mut self) {
-        self.down_worker();
-
-        self.moves += 1;
-        self.most_recent_move = String::from("D");
-    }
-
-    fn down_prime(&mut self) {
-        self.down_prime_worker();
-
-        self.moves += 1;
-        self.most_recent_move = String::from("D'");
-    }
 }
 
 
@@ -808,32 +635,35 @@ fn runner(args: &[String]) {
     loop {
         for argument in args {
             match argument.as_str() {
-                "X"  => cube.x_rotation(),
-                "X'" => cube.x_prime_rotation(),
-                "Y"  => cube.y_rotation(),
-                "Y'" => cube.y_prime_rotation(),
-                "Z"  => cube.z_rotation(),
-                "Z'" => cube.z_prime_rotation(),
-                "E"  => cube.equatorial(),
-                "E'" => cube.equatorial_prime(),
-                "M"  => cube.middle(),
-                "M'" => cube.middle_prime(),
-                "S"  => cube.standing(),
-                "S'" => cube.standing_prime(),
-                "F"  => cube.front(),
-                "F'" => cube.front_prime(),
-                "U"  => cube.upper(),
-                "U'" => cube.upper_prime(),
-                "L"  => cube.left(),
-                "L'" => cube.left_prime(),
-                "R"  => cube.right(),
-                "R'" => cube.right_prime(),
-                "B"  => cube.back(),
-                "B'" => cube.back_prime(),
-                "D"  => cube.down(),
-                "D'" => cube.down_prime(),
+                "X"  => cube.x_rotation_worker(),
+                "X'" => cube.x_prime_rotation_worker(),
+                "Y"  => cube.y_rotation_worker(),
+                "Y'" => cube.y_prime_rotation_worker(),
+                "Z"  => cube.z_rotation_worker(),
+                "Z'" => cube.z_prime_rotation_worker(),
+                "E"  => cube.equatorial_worker(),
+                "E'" => cube.equatorial_prime_worker(),
+                "M"  => cube.middle_worker(),
+                "M'" => cube.middle_prime_worker(),
+                "S"  => cube.standing_worker(),
+                "S'" => cube.standing_prime_worker(),
+                "F"  => cube.front_worker(),
+                "F'" => cube.front_prime_worker(),
+                "U"  => cube.upper_worker(),
+                "U'" => cube.upper_prime_worker(),
+                "L"  => cube.left_worker(),
+                "L'" => cube.left_prime_worker(),
+                "R"  => cube.right_worker(),
+                "R'" => cube.right_prime_worker(),
+                "B"  => cube.back_worker(),
+                "B'" => cube.back_prime_worker(),
+                "D"  => cube.down_worker(),
+                "D'" => cube.down_prime_worker(),
                 _    => println!("skipping invalid argument"),
             }
+
+            cube.moves += 1;
+            cube.most_recent_move = String::from(argument.as_str());
 
             cube.pretty_print();
         }
