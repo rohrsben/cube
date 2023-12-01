@@ -273,7 +273,7 @@ impl Cube {
 
 
     // rotation worker functions
-    fn x_prime_worker(&mut self) {
+    fn x_prime(&mut self) {
         // these two are easy, because the analogous tiles stay in the same positions
         let new_front = self.top_face.get();
         let new_bottom = self.front_face.get();
@@ -358,13 +358,13 @@ impl Cube {
         self.back_face.set(new_back);
     }
 
-    fn x_worker(&mut self) {
-        self.x_prime_worker();
-        self.x_prime_worker();
-        self.x_prime_worker();
+    fn x(&mut self) {
+        self.x_prime();
+        self.x_prime();
+        self.x_prime();
     }
 
-    fn y_worker(&mut self) {
+    fn y(&mut self) {
         // the easy ones
         let new_front = self.right_face.get();
         let new_left = self.front_face.get();
@@ -437,26 +437,26 @@ impl Cube {
         self.back_face.set(new_back);
     }
 
-    fn y_prime_worker(&mut self) {
-        self.y_worker();
-        self.y_worker();
-        self.y_worker();
+    fn y_prime(&mut self) {
+        self.y();
+        self.y();
+        self.y();
     }
 
-    fn z_worker(&mut self) {
-        self.x_prime_worker();
-        self.y_prime_worker();
-        self.x_worker();
+    fn z(&mut self) {
+        self.x_prime();
+        self.y_prime();
+        self.x();
     }
 
-    fn z_prime_worker(&mut self) {
-        self.z_worker();
-        self.z_worker();
-        self.z_worker();
+    fn z_prime(&mut self) {
+        self.z();
+        self.z();
+        self.z();
     }
     
     // slice worker functions
-    fn equatorial_worker(&mut self) {
+    fn equatorial(&mut self) {
         let mut new_front = self.front_face.get();
         new_front.middle_left =   self.left_face.middle_left.replicate();
         new_front.middle_middle = self.left_face.middle_middle.replicate();
@@ -483,38 +483,38 @@ impl Cube {
         self.right_face.set(new_right);
     }
 
-    fn equatorial_prime_worker(&mut self) {
-        self.equatorial_worker();
-        self.equatorial_worker();
-        self.equatorial_worker();
+    fn equatorial_prime(&mut self) {
+        self.equatorial();
+        self.equatorial();
+        self.equatorial();
     }
 
-    fn middle_worker(&mut self) {
-        self.z_prime_worker();
-        self.equatorial_worker();
-        self.z_worker();
+    fn middle(&mut self) {
+        self.z_prime();
+        self.equatorial();
+        self.z();
     }
 
-    fn middle_prime_worker(&mut self) {
-        self.z_prime_worker();
-        self.equatorial_prime_worker();
-        self.z_worker();
+    fn middle_prime(&mut self) {
+        self.z_prime();
+        self.equatorial_prime();
+        self.z();
     }
 
-    fn standing_worker(&mut self) {
-        self.y_worker();
-        self.middle_worker();
-        self.y_prime_worker();
+    fn standing(&mut self) {
+        self.y();
+        self.middle();
+        self.y_prime();
     }
 
-    fn standing_prime_worker(&mut self) {
-        self.y_worker();
-        self.middle_prime_worker();
-        self.y_prime_worker();
+    fn standing_prime(&mut self) {
+        self.y();
+        self.middle_prime();
+        self.y_prime();
     }
 
     // face worker functions
-    fn front_worker(&mut self) {
+    fn front(&mut self) {
         let new_front = Face {
             top_left:   self.front_face.bottom_left.replicate(),
             top_middle: self.front_face.middle_left.replicate(),
@@ -556,74 +556,74 @@ impl Cube {
         self.left_face.set(new_left);
     }
 
-    fn front_prime_worker(&mut self) {
-        self.front_worker();
-        self.front_worker();
-        self.front_worker();
+    fn front_prime(&mut self) {
+        self.front();
+        self.front();
+        self.front();
     }
 
-    fn upper_worker(&mut self) {
-        self.x_prime_worker();
-        self.front_worker();
-        self.x_worker();
+    fn upper(&mut self) {
+        self.x_prime();
+        self.front();
+        self.x();
     }
 
-    fn upper_prime_worker(&mut self) {
-        self.x_prime_worker();
-        self.front_prime_worker();
-        self.x_worker();
+    fn upper_prime(&mut self) {
+        self.x_prime();
+        self.front_prime();
+        self.x();
     }
 
-    fn left_worker(&mut self) {
-        self.y_prime_worker();
-        self.front_worker();
-        self.y_worker();
+    fn left(&mut self) {
+        self.y_prime();
+        self.front();
+        self.y();
     }
 
-    fn left_prime_worker(&mut self) {
-        self.y_prime_worker();
-        self.front_prime_worker();
-        self.y_worker();
+    fn left_prime(&mut self) {
+        self.y_prime();
+        self.front_prime();
+        self.y();
     }
 
-    fn right_worker(&mut self) {
-        self.y_worker();
-        self.front_worker();
-        self.y_prime_worker();
+    fn right(&mut self) {
+        self.y();
+        self.front();
+        self.y_prime();
     }
 
-    fn right_prime_worker(&mut self) {
-        self.y_worker();
-        self.front_prime_worker();
-        self.y_prime_worker();
+    fn right_prime(&mut self) {
+        self.y();
+        self.front_prime();
+        self.y_prime();
     }
 
-    fn back_worker(&mut self) {
-        self.y_worker();
-        self.y_worker();
-        self.front_worker();
-        self.y_worker();
-        self.y_worker();
+    fn back(&mut self) {
+        self.y();
+        self.y();
+        self.front();
+        self.y();
+        self.y();
     }
 
-    fn back_prime_worker(&mut self) {
-        self.y_worker();
-        self.y_worker();
-        self.front_prime_worker();
-        self.y_worker();
-        self.y_worker();
+    fn back_prime(&mut self) {
+        self.y();
+        self.y();
+        self.front_prime();
+        self.y();
+        self.y();
     }
 
-    fn down_worker(&mut self) {
-        self.x_worker();
-        self.front_worker();
-        self.x_prime_worker();
+    fn down(&mut self) {
+        self.x();
+        self.front();
+        self.x_prime();
     }
 
-    fn down_prime_worker(&mut self) {
-        self.x_worker();
-        self.front_prime_worker();
-        self.x_prime_worker();
+    fn down_prime(&mut self) {
+        self.x();
+        self.front_prime();
+        self.x_prime();
     }
 }
 
@@ -635,30 +635,30 @@ fn runner(args: &[String]) {
     loop {
         for argument in args {
             match argument.as_str() {
-                "X"  => cube.x_rotation_worker(),
-                "X'" => cube.x_prime_rotation_worker(),
-                "Y"  => cube.y_rotation_worker(),
-                "Y'" => cube.y_prime_rotation_worker(),
-                "Z"  => cube.z_rotation_worker(),
-                "Z'" => cube.z_prime_rotation_worker(),
-                "E"  => cube.equatorial_worker(),
-                "E'" => cube.equatorial_prime_worker(),
-                "M"  => cube.middle_worker(),
-                "M'" => cube.middle_prime_worker(),
-                "S"  => cube.standing_worker(),
-                "S'" => cube.standing_prime_worker(),
-                "F"  => cube.front_worker(),
-                "F'" => cube.front_prime_worker(),
-                "U"  => cube.upper_worker(),
-                "U'" => cube.upper_prime_worker(),
-                "L"  => cube.left_worker(),
-                "L'" => cube.left_prime_worker(),
-                "R"  => cube.right_worker(),
-                "R'" => cube.right_prime_worker(),
-                "B"  => cube.back_worker(),
-                "B'" => cube.back_prime_worker(),
-                "D"  => cube.down_worker(),
-                "D'" => cube.down_prime_worker(),
+                "X"  => cube.x_rotation(),
+                "X'" => cube.x_prime_rotation(),
+                "Y"  => cube.y_rotation(),
+                "Y'" => cube.y_prime_rotation(),
+                "Z"  => cube.z_rotation(),
+                "Z'" => cube.z_prime_rotation(),
+                "E"  => cube.equatorial(),
+                "E'" => cube.equatorial_prime(),
+                "M"  => cube.middle(),
+                "M'" => cube.middle_prime(),
+                "S"  => cube.standing(),
+                "S'" => cube.standing_prime(),
+                "F"  => cube.front(),
+                "F'" => cube.front_prime(),
+                "U"  => cube.upper(),
+                "U'" => cube.upper_prime(),
+                "L"  => cube.left(),
+                "L'" => cube.left_prime(),
+                "R"  => cube.right(),
+                "R'" => cube.right_prime(),
+                "B"  => cube.back(),
+                "B'" => cube.back_prime(),
+                "D"  => cube.down(),
+                "D'" => cube.down_prime(),
                 _    => println!("skipping invalid argument"),
             }
 
