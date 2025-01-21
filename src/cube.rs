@@ -337,7 +337,8 @@ impl Cube {
         let spacer = " ".repeat(self.size + 1);
         // top layer
         for row in 0 .. self.size {
-            print!("{}", spacer);
+
+            print!("  {}", spacer);
 
             for tile in self.get_row(Top, row).iter() {
                 print!("{}", tile.to_string())
@@ -350,6 +351,8 @@ impl Cube {
 
         // middle layer
         for row in 0 .. self.size {
+            print!("  ");
+
             for tile in self.get_row(Left, row).iter() {
                 print!("{}", tile.to_string());
             }
@@ -373,7 +376,7 @@ impl Cube {
 
         // bottom layer
         for row in 0 .. self.size {
-            print!("{}", spacer);
+            print!("  {}", spacer);
 
             for tile in self.get_row(Bottom, row).iter() {
                 print!("{}", tile.to_string());
