@@ -119,8 +119,8 @@ impl Cube {
         let mut old_bottom = self.get_col(Bottom, col);
         let mut old_back   = self.get_col(Back,   self.size-col-1);
         let old_top        = self.get_col(Top,    col);
-        old_bottom.reverse();
         old_back.reverse();
+        old_bottom.reverse();
 
         self.set_col(Front,  col,             old_top);
         self.set_col(Bottom, col,             old_front);
@@ -130,11 +130,11 @@ impl Cube {
 
     pub fn slice_m_prime(&mut self, col: usize) {
         let old_front      = self.get_col(Front,  col);
-        let mut old_bottom = self.get_col(Bottom, col);
+        let old_bottom = self.get_col(Bottom, col);
         let mut old_back   = self.get_col(Back,   self.size-col-1);
-        let old_top        = self.get_col(Top,    col);
-        old_bottom.reverse();
+        let mut old_top        = self.get_col(Top,    col);
         old_back.reverse();
+        old_top.reverse();
 
         self.set_col(Front,  col,             old_bottom);
         self.set_col(Bottom, col,             old_back);
@@ -171,8 +171,8 @@ impl Cube {
         let mut old_right = self.get_col(Right,  layer);
         let old_bottom    = self.get_row(Bottom, layer);
         let mut old_left  = self.get_col(Left,   layer);
-        old_right.reverse();
         old_left.reverse();
+        old_right.reverse();
 
         self.set_row(Top,    layer, old_left);
         self.set_col(Right,  layer, old_top);
