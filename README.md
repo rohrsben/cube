@@ -8,6 +8,8 @@ By default, `cube` initializes a 3x3 cube. The pattern is a list of movements in
 
 Movement notation breakdown: `<count?><action><layer?>`, where `count` and `layer` are optional. E.g.: `3M'` will do an `M'` slice 3 times. `layer` is only necessary for slice moves on cubes bigger than 3x3: it allows you to specify which layer the slice move targets. Layers are numbered with 1 being closest to you and furthest up; try it out in the terminal for a better idea of how it works. All told, a full move might look like `2E16` (if your cube is particularly large).
 
+Example full command: `cube --size 4 "2s3 x u'"`
+
 # Roadmap
 - [ ] nix build
 - [ ] ratatui tui
