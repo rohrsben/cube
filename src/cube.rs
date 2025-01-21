@@ -384,7 +384,5 @@ impl Cube {
             
             println!();
         }
-
-        println!();
     }
 }
