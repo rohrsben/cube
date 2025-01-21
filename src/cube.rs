@@ -114,92 +114,96 @@ impl Cube {
         }
     }
 
-    pub fn slice_m(&mut self, col: usize) {
-        let old_front      = self.get_col(Front,  col);
-        let mut old_bottom = self.get_col(Bottom, col);
-        let mut old_back   = self.get_col(Back,   self.size-col-1);
-        let old_top        = self.get_col(Top,    col);
+    pub fn slice_m(&mut self, layer: usize) {
+        let old_front      = self.get_col(Front,  layer);
+        let mut old_bottom = self.get_col(Bottom, layer);
+        let mut old_back   = self.get_col(Back,   self.size-layer-1);
+        let old_top        = self.get_col(Top,    layer);
+
         old_back.reverse();
         old_bottom.reverse();
 
-        self.set_col(Front,  col,             old_top);
-        self.set_col(Bottom, col,             old_front);
-        self.set_col(Back,   self.size-col-1, old_bottom);
-        self.set_col(Top,    col,             old_back);
+        self.set_col(Front,  layer,             old_top);
+        self.set_col(Bottom, layer,             old_front);
+        self.set_col(Back,   self.size-layer-1, old_bottom);
+        self.set_col(Top,    layer,             old_back);
     }
 
-    pub fn slice_m_prime(&mut self, col: usize) {
-        let old_front      = self.get_col(Front,  col);
-        let old_bottom = self.get_col(Bottom, col);
-        let mut old_back   = self.get_col(Back,   self.size-col-1);
-        let mut old_top        = self.get_col(Top,    col);
+    pub fn slice_m_prime(&mut self, layer: usize) {
+        let old_front    = self.get_col(Front,  layer);
+        let old_bottom   = self.get_col(Bottom, layer);
+        let mut old_back = self.get_col(Back,   self.size-layer-1);
+        let mut old_top  = self.get_col(Top,    layer);
+
         old_back.reverse();
         old_top.reverse();
 
-        self.set_col(Front,  col,             old_bottom);
-        self.set_col(Bottom, col,             old_back);
-        self.set_col(Back,   self.size-col-1, old_top);
-        self.set_col(Top,    col,             old_front);
+        self.set_col(Front,  layer,             old_bottom);
+        self.set_col(Bottom, layer,             old_back);
+        self.set_col(Back,   self.size-layer-1, old_top);
+        self.set_col(Top,    layer,             old_front);
     }
     
-    pub fn slice_e(&mut self, row: usize) {
-        let old_front = self.get_row(Front, row);
-        let old_right = self.get_row(Right, row);
-        let old_back  = self.get_row(Back,  row);
-        let old_left  = self.get_row(Left,  row);
+    pub fn slice_e(&mut self, layer: usize) {
+        let old_front = self.get_row(Front, layer);
+        let old_right = self.get_row(Right, layer);
+        let old_back  = self.get_row(Back,  layer);
+        let old_left  = self.get_row(Left,  layer);
 
-        self.set_row(Front, row, old_left);
-        self.set_row(Right, row, old_front);
-        self.set_row(Back,  row, old_right);
-        self.set_row(Left,  row, old_back);
+        self.set_row(Front, layer, old_left);
+        self.set_row(Right, layer, old_front);
+        self.set_row(Back,  layer, old_right);
+        self.set_row(Left,  layer, old_back);
     }
     
-    pub fn slice_e_prime(&mut self, row: usize) {
-        let old_front = self.get_row(Front, row);
-        let old_right = self.get_row(Right, row);
-        let old_back  = self.get_row(Back,  row);
-        let old_left  = self.get_row(Left,  row);
+    pub fn slice_e_prime(&mut self, layer: usize) {
+        let old_front = self.get_row(Front, layer);
+        let old_right = self.get_row(Right, layer);
+        let old_back  = self.get_row(Back,  layer);
+        let old_left  = self.get_row(Left,  layer);
 
-        self.set_row(Front, row, old_right);
-        self.set_row(Right, row, old_back);
-        self.set_row(Back,  row, old_left);
-        self.set_row(Left,  row, old_front);
+        self.set_row(Front, layer, old_right);
+        self.set_row(Right, layer, old_back);
+        self.set_row(Back,  layer, old_left);
+        self.set_row(Left,  layer, old_front);
     }
     
     pub fn slice_s(&mut self, layer: usize) {
-        let old_top       = self.get_row(Top,    layer);
+        let old_top       = self.get_row(Top,    self.size-layer-1);
         let mut old_right = self.get_col(Right,  layer);
         let old_bottom    = self.get_row(Bottom, layer);
-        let mut old_left  = self.get_col(Left,   layer);
+        let mut old_left  = self.get_col(Left,   self.size-layer-1);
+
         old_left.reverse();
         old_right.reverse();
 
-        self.set_row(Top,    layer, old_left);
-        self.set_col(Right,  layer, old_top);
-        self.set_row(Bottom, layer, old_right);
-        self.set_col(Left,   layer, old_bottom);
+        self.set_row(Top,    self.size-layer-1, old_left);
+        self.set_col(Right,  layer,             old_top);
+        self.set_row(Bottom, layer,             old_right);
+        self.set_col(Left,   self.size-layer-1, old_bottom);
     }
     
     pub fn slice_s_prime(&mut self, layer: usize) {
-        let mut old_top    = self.get_row(Top,    layer);
+        let mut old_top    = self.get_row(Top,    self.size-layer-1);
         let old_right      = self.get_col(Right,  layer);
         let mut old_bottom = self.get_row(Bottom, layer);
-        let old_left       = self.get_col(Left,   layer);
+        let old_left       = self.get_col(Left,   self.size-layer-1);
+
         old_top.reverse();
         old_bottom.reverse();
 
-        self.set_row(Top,    layer, old_right);
-        self.set_col(Right,  layer, old_bottom);
-        self.set_row(Bottom, layer, old_left);
-        self.set_col(Left,   layer, old_top);
+        self.set_row(Top,    self.size-layer-1, old_right);
+        self.set_col(Right,  layer,             old_bottom);
+        self.set_row(Bottom, layer,             old_left);
+        self.set_col(Left,   self.size-layer-1, old_top);
     }
 
     pub fn rotate_x(&mut self) {
         self.aboutface(Left,  Counter);
         self.aboutface(Right, Clock);
 
-        for col in 0 .. self.size {
-            self.slice_m_prime(col);
+        for layer in 0 .. self.size {
+            self.slice_m_prime(layer);
         }
     }
 
@@ -207,8 +211,8 @@ impl Cube {
         self.aboutface(Left,  Clock);
         self.aboutface(Right, Counter);
 
-        for col in 0 .. self.size {
-            self.slice_m(col);
+        for layer in 0 .. self.size {
+            self.slice_m(layer);
         }
     }
 
@@ -216,8 +220,8 @@ impl Cube {
         self.aboutface(Top,    Clock);
         self.aboutface(Bottom, Counter);
 
-        for row in 0 .. self.size {
-            self.slice_e_prime(row);
+        for layer in 0 .. self.size {
+            self.slice_e_prime(layer);
         }
     }
 
@@ -225,8 +229,8 @@ impl Cube {
         self.aboutface(Top,    Counter);
         self.aboutface(Bottom, Clock);
 
-        for row in 0 .. self.size {
-            self.slice_e(row);
+        for layer in 0 .. self.size {
+            self.slice_e(layer);
         }
     }
 
