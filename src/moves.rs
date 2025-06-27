@@ -119,6 +119,7 @@ impl Move {
             return Err(ParseError::InvalidLayer);
         }
 
+
         let action = match action.as_str() {
             "U" => Move::U,
             "U'" => Move::Up,
@@ -138,12 +139,14 @@ impl Move {
             "Y'" => Move::Yp,
             "Z" => Move::Z,
             "Z'" => Move::Zp,
-            "M" => Move::M(layer),
-            "M'" => Move::Mp(layer),
-            "E" => Move::E(layer),
-            "E'" => Move::Ep(layer),
-            "S" => Move::S(layer),
-            "S'" => Move::Sp(layer),
+
+            // account for 0-indexing
+            "M" => Move::M(layer - 1),
+            "M'" => Move::Mp(layer - 1),
+            "E" => Move::E(layer - 1),
+            "E'" => Move::Ep(layer - 1),
+            "S" => Move::S(layer - 1),
+            "S'" => Move::Sp(layer - 1),
             _ => unreachable!()
         };
 
