@@ -5,7 +5,7 @@ use clap::Parser;
 pub struct Args {
     /// Size of the cube
     #[arg(short, long, default_value_t = 3)]
-    pub size: usize,
+    pub size: u8,
 
     /// Panic on invalid pattern inputs
     #[arg(short, long, default_value_t = false)]

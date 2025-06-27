@@ -12,7 +12,7 @@ pub enum Color {
 }
 
 impl Color {
-    pub fn to_string(&self) -> ColoredString {
+    pub fn to_string(self) -> ColoredString {
         match self {
             Color::Green  => "G".to_string().green(),
             Color::White  => "W".to_string().truecolor(255, 255, 255),
