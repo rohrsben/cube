@@ -24,18 +24,18 @@ fn main() {
 
     loop {
         for m in &pattern {
+            if matches!(m, Move::X | Move::Xp | Move::Y | Move::Yp | Move::Z | Move::Zp) {
+                rotations += 1;
+            } else {
+                move_count += 1;
+            }
+
             if !args.quiet { println!("{move_count:=<5}{line}{m}"); }
 
             cube.do_move(m);
 
             if !args.quiet { cube.pretty_print(); }
             if !args.quiet { println!("{move_count:=<5}{line}{m}"); }
-
-            if matches!(m, Move::X | Move::Xp | Move::Y | Move::Yp | Move::Z | Move::Zp) {
-                rotations += 1;
-            } else {
-                move_count += 1;
-            }
         }
 
         repetitions += 1;
