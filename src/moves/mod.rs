@@ -1,24 +1,11 @@
+pub mod parse_error;
+
 use std::fmt::{self, Formatter};
 use regex::Regex;
 
+use parse_error::*;
+
 use Move::*;
-use ParseError::*;
-
-enum ParseError {
-    InvalidLayer,
-    MissingLayer,
-    TooSmallForSlice
-}
-
-impl fmt::Display for ParseError {
-    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        match *self {
-            InvalidLayer => write!(f, "Slice layer must be between 2 and (cube size - 1)"),
-            MissingLayer => write!(f, "Slice moves on cubes of size > 3 require a layer"),
-            TooSmallForSlice => write!(f, "Cube is too small for a slice. Please use a side turn like U or R")
-        }
-    }
-}
 
 #[derive(Debug, Copy, Clone)]
 pub enum Move {
@@ -64,9 +51,10 @@ impl fmt::Display for Move {
 
 
 impl Move {
-    pub fn parse_moves(pattern: String, size: usize, panic_on_invalid: bool) -> Vec<Self> {
+    pub fn parse_moves(pattern: String, size: usize) -> (Vec<Self>, Vec<ParseErrorDetails>) {
         let regex = Regex::new(r"(?<c>\d*)(?<a>[udrlfbxyzmesUDRLFBXYZMES]'?)(?<l>\d*)").unwrap();
         let mut moves = Vec::new();
+        let mut errors = Vec::new();
 
         for item in regex.captures_iter(&pattern) {
             match Move::parse_move(&item, size) {
@@ -76,17 +64,17 @@ impl Move {
                     }
                 }
                 Err(e) => {
-                    if panic_on_invalid {
-                        println!("{}: at {}", e, &item[0]);
-                        panic!()
-                    } else {
-                        println!("Skipping invalid move: {}", &item[0]);
-                    }
+                    errors.push(
+                        ParseErrorDetails { 
+                            e,
+                            m: item[0].to_string()
+                        }
+                    );
                 }
             }
         }
 
-        moves
+        (moves, errors)
     }
 
     fn parse_move(input: &regex::Captures, size: usize) -> Result<(usize, Self), ParseError> {
@@ -99,23 +87,22 @@ impl Move {
 
         let layer = match input["l"].is_empty() {
             true => {
-                if matches!(action.as_str(), "M" | "E" | "S") {
-                    if size > 3 {
-                        return Err(MissingLayer);
-                    } else if size < 3 {
-                        return Err(TooSmallForSlice);
-                    } else {
-                        1
-                    }
-                } else {
-                    1
+                if matches!(action.as_str(), "M" | "M'" | "E" | "E'" | "S" | "S'") {
+                    if size > 3 { return Err(ParseError::MissingLayer); }
+                    if size < 3 { return Err(ParseError::TooSmallForSlice); }
                 }
+
+                1 // targeting the middle layer on a 3x3 does not need to be specified
             }
             false => {
+                if !matches!(action.as_str(), "M" | "M'" | "E" | "E'" | "S" | "S'") {
+                    return Err(ParseError::UnnecessaryLayer);
+                }
+
                 let user_layer = input["l"].parse::<usize>().unwrap() - 1;
 
                 if user_layer < 1 || user_layer > size - 2 {
-                    return Err(InvalidLayer)
+                    return Err(ParseError::InvalidLayer)
                 }
 
                 user_layer

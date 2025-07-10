@@ -29,7 +29,22 @@ fn main() {
     let mut rotations = 0;
     let mut repetitions = 0;
 
-    let pattern = Move::parse_moves(args.pattern, args.size, args.panic);
+    let (pattern, errors) = Move::parse_moves(args.pattern, args.size);
+
+    if !errors.is_empty() {
+        if args.panic {
+            println!("Errors:");
+            for e in errors {
+                println!(" - {}", e);
+            }
+            panic!();
+        } else {
+            println!("Skipping invalid moves:");
+            for e in errors {
+                println!(" - {}", e);
+            }
+        }
+    }
 
     if !args.quiet { cube.pretty_print(); }
 
