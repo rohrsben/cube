@@ -1,12 +1,25 @@
-mod cube;
-mod args;
-mod moves;
-
-use cube::Cube;
-use moves::Move;
-use args::Args;
 use clap::Parser;
 
+use libcube::Cube;
+use libcube::moves::Move;
+
+#[derive(Parser)]
+#[command(version, about, long_about = None)]
+pub struct Args {
+    /// Size of the cube
+    #[arg(short, long, default_value_t = 3)]
+    pub size: usize,
+
+    /// Panic on invalid pattern inputs
+    #[arg(short, long, default_value_t = false)]
+    pub panic: bool,
+
+    /// Don't print the cube :(
+    #[arg(short, long, default_value_t = false)]
+    pub quiet: bool,
+
+    pub pattern: String,
+}
 
 fn main() {
     let args = Args::parse();

@@ -1,8 +1,12 @@
 [package]
 name = "cube"
-version = "1.0.0"
+version = "1.0.1"
 edition = "2021"
 description = "Rotates cubes lol"
+
+[lib]
+name = "libcube"
+path = "src/lib.rs"
 
 [dependencies]
 clap = { version = "4.5.26", features = ["derive"] }

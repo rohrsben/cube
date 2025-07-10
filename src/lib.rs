@@ -1,45 +1,22 @@
 mod color;
+mod face;
+pub mod moves;
+
+use std::collections::HashMap;
 
 use color::Color;
-use std::collections::HashMap;
-use crate::moves::Move;
-use Face::*;
+use face::Face::{self, *};
+use moves::Move::{self, *};
+
 use Direction::*;
 
-#[derive(Eq, Hash, Copy, Clone, PartialEq)]
-enum Face {
-    Front,
-    Top,
-    Right,
-    Left,
-    Bottom,
-    Back
-}
-
-impl Face {
-    fn get_color(&self) -> Color {
-        match self {
-            Front  => Color::White,
-            Top    => Color::Green,
-            Right  => Color::Orange,
-            Left   => Color::Red,
-            Bottom => Color::Blue,
-            Back   => Color::Yellow
-        }
-    }
-
-    fn as_vec() -> Vec<Face> {
-        vec![Front, Top, Right, Left, Bottom, Back]
-    }
-}
-
-pub enum Direction {
+enum Direction {
     Clock,
     Counter
 }
 
 pub struct Cube {
-    size:  usize,
+    size: usize,
     sides: HashMap<Face, Vec<Vec<Color>>>
 }
 
@@ -48,7 +25,7 @@ impl Cube {
         let mut sides = HashMap::new();
 
         for face in Face::as_vec() {
-            sides.insert(face, vec![vec![face.get_color(); size]; size]);
+            sides.insert(face, vec![vec![face.color(); size]; size]);
         }
 
         Self {
@@ -59,37 +36,37 @@ impl Cube {
 
     pub fn do_move(&mut self, action: &Move) {
         match action {
-            Move::U  => self.turn_u(),
-            Move::Up => self.turn_u_prime(),
-            Move::D  => self.turn_d(),
-            Move::Dp => self.turn_d_prime(),
-            Move::R  => self.turn_r(),
-            Move::Rp => self.turn_r_prime(),
-            Move::L  => self.turn_l(),
-            Move::Lp => self.turn_l_prime(),
-            Move::F  => self.turn_f(),
-            Move::Fp => self.turn_f_prime(),
-            Move::B  => self.turn_b(),
-            Move::Bp => self.turn_b_prime(),
-            Move::X  => self.rotate_x(),
-            Move::Xp => self.rotate_x_prime(),
-            Move::Y  => self.rotate_y(),
-            Move::Yp => self.rotate_y_prime(),
-            Move::Z  => self.rotate_z(),
-            Move::Zp => self.rotate_z_prime(),
+            U  => self.turn_u(),
+            Up => self.turn_u_prime(),
+            D  => self.turn_d(),
+            Dp => self.turn_d_prime(),
+            R  => self.turn_r(),
+            Rp => self.turn_r_prime(),
+            L  => self.turn_l(),
+            Lp => self.turn_l_prime(),
+            F  => self.turn_f(),
+            Fp => self.turn_f_prime(),
+            B  => self.turn_b(),
+            Bp => self.turn_b_prime(),
+            X  => self.rotate_x(),
+            Xp => self.rotate_x_prime(),
+            Y  => self.rotate_y(),
+            Yp => self.rotate_y_prime(),
+            Z  => self.rotate_z(),
+            Zp => self.rotate_z_prime(),
 
-            Move::M(layer)  => self.slice_m(*layer as usize),
-            Move::Mp(layer) => self.slice_m_prime(*layer as usize),
-            Move::E(layer)  => self.slice_e(*layer as usize),
-            Move::Ep(layer) => self.slice_e_prime(*layer as usize),
-            Move::S(layer)  => self.slice_s(*layer as usize),
-            Move::Sp(layer) => self.slice_s_prime(*layer as usize),
+            M(layer)  => self.slice_m(*layer as usize),
+            Mp(layer) => self.slice_m_prime(*layer as usize),
+            E(layer)  => self.slice_e(*layer as usize),
+            Ep(layer) => self.slice_e_prime(*layer as usize),
+            S(layer)  => self.slice_s(*layer as usize),
+            Sp(layer) => self.slice_s_prime(*layer as usize),
         }
     }
 
     pub fn check(&self) -> bool {
         for face in Face::as_vec() {
-            let face_color = face.get_color();
+            let face_color = face.color();
             for row in self.sides.get(&face).unwrap() {
                 for tile in row {
                     if *tile != face_color { return false; }
