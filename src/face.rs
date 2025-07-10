@@ -1,4 +1,4 @@
-use crate::color::Color::{self, *};
+use crate::tile_color::TileColor::{self, *};
 use Face::*;
 
 #[derive(PartialEq, Eq, Hash, Copy, Clone)]
@@ -12,7 +12,7 @@ pub enum Face {
 }
 
 impl Face {
-    pub fn color(&self) -> Color {
+    pub fn color(&self) -> TileColor {
         match self {
             Front  => White,
             Top    => Green,

@@ -2,7 +2,7 @@ use colored::*;
 use std::fmt::{self, Formatter};
 
 #[derive(Copy, Clone, PartialEq)]
-pub enum Color {
+pub enum TileColor {
     Green,
     White,
     Red,
@@ -11,7 +11,7 @@ pub enum Color {
     Blue,
 }
 
-impl fmt::Display for Color {
+impl fmt::Display for TileColor {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         match *self {
             Self::Green => write!(f, "{}", "G".green()),

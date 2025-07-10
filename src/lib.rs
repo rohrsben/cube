@@ -1,10 +1,10 @@
-mod color;
+mod tile_color;
 mod face;
 pub mod moves;
 
 use std::collections::HashMap;
 
-use color::Color;
+use tile_color::TileColor;
 use face::Face::{self, *};
 use moves::Move::{self, *};
 
@@ -17,7 +17,7 @@ enum Direction {
 
 pub struct Cube {
     size: usize,
-    sides: HashMap<Face, Vec<Vec<Color>>>
+    sides: HashMap<Face, Vec<Vec<TileColor>>>
 }
 
 impl Cube {
@@ -130,8 +130,8 @@ impl Cube {
         }
     }
 
-    fn get_col(&self, face: Face, col: usize) -> Vec<Color> {
-        let mut column: Vec<Color> = Vec::new();
+    fn get_col(&self, face: Face, col: usize) -> Vec<TileColor> {
+        let mut column: Vec<TileColor> = Vec::new();
 
         for row in self.sides.get(&face).unwrap().iter() {
             column.push(row[col]);
@@ -140,18 +140,18 @@ impl Cube {
         column
     }
 
-    fn get_row(&self, face: Face, row: usize) -> Vec<Color> {
+    fn get_row(&self, face: Face, row: usize) -> Vec<TileColor> {
         self.sides.get(&face).unwrap()[row].clone()
     }
 
-    fn set_col(&mut self, face: Face, col: usize, new: Vec<Color>) {
+    fn set_col(&mut self, face: Face, col: usize, new: Vec<TileColor>) {
         let current_face = self.sides.get_mut(&face).unwrap();
         for (row, color) in new.iter().enumerate() {
             current_face[row][col] = *color;
         }
     }
 
-    fn set_row(&mut self, face: Face, row: usize, new: Vec<Color>) {
+    fn set_row(&mut self, face: Face, row: usize, new: Vec<TileColor>) {
         let current_face = self.sides.get_mut(&face).unwrap();
         current_face[row] = new;
     }
@@ -161,7 +161,7 @@ impl Cube {
     fn aboutface(&mut self, face: Face, direction: Direction) {
         match direction {
             Direction::Clock => {
-                let mut old_cols: Vec<Vec<Color>> = Vec::new();
+                let mut old_cols: Vec<Vec<TileColor>> = Vec::new();
                 for i in 0..self.size {
                     old_cols.push(self.get_col(face, i).into_iter().rev().collect());
                 }
@@ -172,7 +172,7 @@ impl Cube {
             }
 
             Direction::Counter => {
-                let mut old_cols: Vec<Vec<Color>> = Vec::new();
+                let mut old_cols: Vec<Vec<TileColor>> = Vec::new();
                 for i in (0..self.size).rev() {
                     old_cols.push(self.get_col(face, i));
                 }
