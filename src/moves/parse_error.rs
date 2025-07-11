@@ -2,6 +2,7 @@ use std::fmt::{self, Formatter};
 
 use ParseError::*;
 
+#[derive(Debug, PartialEq, Eq)]
 pub enum ParseError {
     InvalidLayer,
     MissingLayer,
@@ -20,6 +21,7 @@ impl fmt::Display for ParseError {
     }
 }
 
+#[derive(Debug, PartialEq, Eq)]
 pub struct ParseErrorDetails {
     pub e: ParseError,
     pub m: String
