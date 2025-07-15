@@ -55,12 +55,12 @@ impl Cube {
             Move::Z  => self.rotate_z(),
             Move::Zp => self.rotate_z_prime(),
 
-            Move::M(layer)  => self.slice_m(*layer as usize),
-            Move::Mp(layer) => self.slice_m_prime(*layer as usize),
-            Move::E(layer)  => self.slice_e(*layer as usize),
-            Move::Ep(layer) => self.slice_e_prime(*layer as usize),
-            Move::S(layer)  => self.slice_s(*layer as usize),
-            Move::Sp(layer) => self.slice_s_prime(*layer as usize),
+            Move::M(layer)  => self.slice_m(*layer),
+            Move::Mp(layer) => self.slice_m_prime(*layer),
+            Move::E(layer)  => self.slice_e(*layer),
+            Move::Ep(layer) => self.slice_e_prime(*layer),
+            Move::S(layer)  => self.slice_s(*layer),
+            Move::Sp(layer) => self.slice_s_prime(*layer),
         }
     }
 
