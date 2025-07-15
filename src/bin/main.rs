@@ -24,7 +24,7 @@ pub struct Args {
 fn main() {
     let args = Args::parse();
 
-    let mut cube = Cube::new(args.size.into());
+    let mut cube = Cube::new(args.size);
     let mut move_count = 0;
     let mut rotations = 0;
     let mut repetitions = 0;
