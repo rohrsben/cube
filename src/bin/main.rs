@@ -29,7 +29,7 @@ fn main() {
     let mut rotations = 0;
     let mut repetitions = 0;
 
-    let (pattern, errors) = Move::parse_moves(args.pattern, args.size);
+    let (pattern, errors) = Move::parse_moves(&args.pattern, args.size);
 
     if !errors.is_empty() {
         if args.panic {

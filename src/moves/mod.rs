@@ -52,13 +52,12 @@ impl fmt::Display for Move {
 const REGEX: &'static str = r"(?<c>\d*)(?<a>[udrlfbxyzmesUDRLFBXYZMES]'?)(?<l>\d*)";
 
 impl Move {
-    // TODO take an &str, and return references inside ParseErrorDetails
-    pub fn parse_moves(pattern: String, size: usize) -> (Vec<Self>, Vec<ParseErrorDetails>) {
+    pub fn parse_moves<'a>(pattern: &'a str, size: usize) -> (Vec<Self>, Vec<ParseErrorDetails<'a>>) {
         let reg = Regex::new(REGEX).unwrap();
         let mut moves = Vec::new();
         let mut errors = Vec::new();
 
-        for item in reg.captures_iter(&pattern) {
+        for item in reg.captures_iter(pattern) {
             match Move::parse_move(&item, size) {
                 Ok(result) => {
                     for _ in 0..(result.0) {
@@ -69,7 +68,7 @@ impl Move {
                     errors.push(
                         ParseErrorDetails { 
                             e,
-                            m: item[0].to_string()
+                            m: item.get(0).unwrap().as_str()
                         }
                     );
                 }
@@ -102,7 +101,7 @@ impl Move {
             let user_layer = input["l"].parse::<usize>().unwrap() - 1; // - 1 to account for 0-index
 
             if user_layer < 1 || user_layer > size - 2 { // ranges are accounting for 0-index also
-                return Err(ParseError::InvalidLayer)
+                return Err(ParseError::InvalidLayer);
             }
 
             user_layer
@@ -148,140 +147,220 @@ mod tests {
     fn regex_correctness() {
         let test_input = "u m'1 2R 3B'4 5g6";
 
-        let mut caps = caps_vec(test_input);
+        let caps = caps_vec(test_input);
 
         assert_eq!(caps.len(), 4);
 
-        let cap = caps.pop().unwrap();
-        assert_eq!(&cap[0], "3B'4");
-        assert_eq!(&cap["c"], "3");
-        assert_eq!(&cap["a"], "B'");
-        assert_eq!(&cap["l"], "4");
-
-        let cap = caps.pop().unwrap();
-        assert_eq!(&cap[0], "2R");
-        assert_eq!(&cap["c"], "2");
-        assert_eq!(&cap["a"], "R");
+        let cap = &caps[0];
+        assert_eq!(&cap[0], "u");
+        assert!(&cap["c"].is_empty());
+        assert_eq!(&cap["a"], "u");
         assert!(&cap["l"].is_empty());
 
-        let cap = caps.pop().unwrap();
+        let cap = &caps[1];
         assert_eq!(&cap[0], "m'1");
         assert!(&cap["c"].is_empty());
         assert_eq!(&cap["a"], "m'");
         assert_eq!(&cap["l"], "1");
 
-        let cap = caps.pop().unwrap();
-        assert_eq!(&cap[0], "u");
-        assert!(&cap["c"].is_empty());
-        assert_eq!(&cap["a"], "u");
+        let cap = &caps[2];
+        assert_eq!(&cap[0], "2R");
+        assert_eq!(&cap["c"], "2");
+        assert_eq!(&cap["a"], "R");
         assert!(&cap["l"].is_empty());
+
+        let cap = &caps[3];
+        assert_eq!(&cap[0], "3B'4");
+        assert_eq!(&cap["c"], "3");
+        assert_eq!(&cap["a"], "B'");
+        assert_eq!(&cap["l"], "4");
     }
 
     #[test]
-    fn parse_errors() {
-        let test_input = "m5 m1 r2 m m";
+    fn parsemove_err_missinglayer() {
+        let caps = caps_vec("m");
+        let result = Move::parse_move(&caps[0], 4);
 
-        let mut caps = caps_vec(test_input);
-
-        let cap = caps.pop().unwrap();
-        let res = Move::parse_move(&cap, 4);
-        assert!(res.is_err_and(|e| matches!(e, ParseError::MissingLayer)));
-
-        let cap = caps.pop().unwrap();
-        let res = Move::parse_move(&cap, 2);
-        assert!(res.is_err_and(|e| matches!(e, ParseError::TooSmallForSlice)));
-
-        let cap = caps.pop().unwrap();
-        let res = Move::parse_move(&cap, 4);
-        assert!(res.is_err_and(|e| matches!(e, ParseError::UnnecessaryLayer)));
-
-        let cap = caps.pop().unwrap();
-        let res = Move::parse_move(&cap, 4);
-        assert!(res.is_err_and(|e| matches!(e, ParseError::InvalidLayer)));
-
-        let cap = caps.pop().unwrap();
-        let res = Move::parse_move(&cap, 4);
-        assert!(res.is_err_and(|e| matches!(e, ParseError::InvalidLayer)));
+        assert!(result.is_err_and(|e| matches!(e, ParseError::MissingLayer)));
     }
 
     #[test]
-    fn parse_correctness() {
-        // missing count
-        let test_input = "r";
-        let caps = caps_vec(test_input);
-        let output = Move::parse_move(&caps[0], 3);
-        assert_eq!(output, Ok((1, Move::R)));
+    fn parsemove_err_toosmallforslice() {
+        let caps = caps_vec("m");
+        let result = Move::parse_move(&caps[0], 2);
 
-        // big count
-        let test_input = "6r";
-        let caps = caps_vec(test_input);
-        let output = Move::parse_move(&caps[0], 3);
-        assert_eq!(output, Ok((2, Move::R)));
-
-        // auto-layer on 3x3
-        let test_input = "m";
-        let caps = caps_vec(test_input);
-        let output = Move::parse_move(&caps[0], 3);
-        assert_eq!(output, Ok((1, Move::M(1))));
-
-        // user-input layer on big cube
-        let test_input = "m4";
-        let caps = caps_vec(test_input);
-        let output = Move::parse_move(&caps[0], 5);
-        assert_eq!(output, Ok((1, Move::M(3))));
+        assert!(result.is_err_and(|e| matches!(e, ParseError::TooSmallForSlice)));
     }
 
     #[test]
-    fn parse_moves_correctness() {
-        // empty string produces nothing
-        let test_input = "";
-        let (moves, errors) = Move::parse_moves(test_input.to_string(), 3);
+    fn parsemove_err_unnecessarylayer() {
+        let caps = caps_vec("r2");
+        let result = Move::parse_move(&caps[0], 4);
+
+        assert!(result.is_err_and(|e| matches!(e, ParseError::UnnecessaryLayer)));
+    }
+
+    #[test]
+    fn parsemove_err_invalidlayer_too_small() {
+        let caps = caps_vec("m1");
+        let result = Move::parse_move(&caps[0], 4);
+
+        assert!(result.is_err_and(|e| matches!(e, ParseError::InvalidLayer)));
+    }
+
+    #[test]
+    fn parsemove_err_invalidlayer_too_big() {
+        let caps = caps_vec("m5");
+        let result = Move::parse_move(&caps[0], 4);
+
+        assert!(result.is_err_and(|e| matches!(e, ParseError::InvalidLayer)));
+    }
+
+    #[test]
+    fn parsemove_user_layer() {
+        let caps = caps_vec("m4");
+
+        let result = Move::parse_move(&caps[0], 5);
+        let expected = Ok((
+            1,
+            Move::M(3)
+        ));
+
+        assert_eq!(result, expected);
+    }
+
+    #[test]
+    fn parsemove_auto_layer() {
+        let caps = caps_vec("m");
+
+        let result = Move::parse_move(&caps[0], 3);
+        let expected = Ok((
+            1,
+            Move::M(1)
+        ));
+        
+        assert_eq!(result, expected);
+    }
+
+    #[test]
+    fn parsemove_big_count() {
+        let caps = caps_vec("6r");
+
+        let result = Move::parse_move(&caps[0], 3);
+        let expected = Ok((
+            2,
+            Move::R
+        ));
+
+        assert_eq!(result, expected);
+    }
+
+    #[test]
+    fn parsemove_missing_count() {
+        let caps = caps_vec("r");
+
+        let result = Move::parse_move(&caps[0], 3);
+        let expected = Ok((
+            1,
+            Move::R
+        ));
+
+        assert_eq!(result, expected);
+    }
+
+    #[test]
+    fn parsemoves_empty_string() {
+        let input = "";
+        let (moves, errors) = Move::parse_moves(input, 3);
+
         assert!(moves.is_empty());
         assert!(errors.is_empty());
+    }
 
-        // non-matching string produces nothing
-        let test_input = "123";
-        let (moves, errors) = Move::parse_moves(test_input.to_string(), 3);
+    #[test]
+    fn parsemoves_no_matches() {
+        let input = "123";
+        let (moves, errors) = Move::parse_moves(input, 3);
+
         assert!(moves.is_empty());
         assert!(errors.is_empty());
+    }
 
-        // all normal moves are converted
-        let test_input = "udlrfbxyzmes";
-        let (moves, errors) = Move::parse_moves(test_input.to_string(), 3);
+    #[test]
+    fn parsemoves_convert_all_normals() {
+        let input = "udlrfbxyzmes";
+        let (moves, errors) = Move::parse_moves(input, 3);
+
         assert_eq!(moves.len(), 12);
-        assert!(errors.is_empty());
+        assert_eq!(moves[0], Move::U);
+        assert_eq!(moves[1], Move::D);
+        assert_eq!(moves[2], Move::L);
+        assert_eq!(moves[3], Move::R);
+        assert_eq!(moves[4], Move::F);
+        assert_eq!(moves[5], Move::B);
+        assert_eq!(moves[6], Move::X);
+        assert_eq!(moves[7], Move::Y);
+        assert_eq!(moves[8], Move::Z);
+        assert_eq!(moves[9], Move::M(1));
+        assert_eq!(moves[10], Move::E(1));
+        assert_eq!(moves[11], Move::S(1));
 
-        // all prime moves are converted
-        let test_input = "u'd'l'r'f'b'x'y'z'm'e's'";
-        let (moves, errors) = Move::parse_moves(test_input.to_string(), 3);
+        assert!(errors.is_empty());
+    }
+
+    #[test]
+    fn parsemoves_convert_all_primes() {
+        let input = "u'd'l'r'f'b'x'y'z'm'e's'";
+        let (moves, errors) = Move::parse_moves(input, 3);
+
         assert_eq!(moves.len(), 12);
-        assert!(errors.is_empty());
+        assert_eq!(moves[0], Move::Up);
+        assert_eq!(moves[1], Move::Dp);
+        assert_eq!(moves[2], Move::Lp);
+        assert_eq!(moves[3], Move::Rp);
+        assert_eq!(moves[4], Move::Fp);
+        assert_eq!(moves[5], Move::Bp);
+        assert_eq!(moves[6], Move::Xp);
+        assert_eq!(moves[7], Move::Yp);
+        assert_eq!(moves[8], Move::Zp);
+        assert_eq!(moves[9], Move::Mp(1));
+        assert_eq!(moves[10], Move::Ep(1));
+        assert_eq!(moves[11], Move::Sp(1));
 
-        // count gets applied correctly
-        let test_input = "3u";
-        let (moves, errors) = Move::parse_moves(test_input.to_string(), 3);
+        assert!(errors.is_empty());
+    }
+
+    #[test]
+    fn parsemoves_count_is_correct() {
+        let input = "3u";
+        let (moves, errors) = Move::parse_moves(input, 3);
+
         assert_eq!(moves.len(), 3);
         assert!(errors.is_empty());
+    }
 
+    #[test]
+    fn parsemoves_mixed_errors_and_moves() {
         // errors don't disrupt following parses
-        let test_input = "u3 r m3";
-        let (mut moves, mut errors) = Move::parse_moves(test_input.to_string(), 3);
+        let input = "u3 r m3";
+        let (moves, errors) = Move::parse_moves(input, 3);
+
         assert_eq!(moves.len(), 1);
-        assert_eq!(moves.pop().unwrap(), Move::R);
+        assert_eq!(moves[0], Move::R);
 
         assert_eq!(errors.len(), 2);
         assert_eq!(
-            errors.pop().unwrap(), 
+            errors[0], 
             ParseErrorDetails {
-                e: ParseError::InvalidLayer,
-                m: "m3".to_string()
+                e: ParseError::UnnecessaryLayer,
+                m: "u3"
             }
         );
         assert_eq!(
-            errors.pop().unwrap(),
+            errors[1],
             ParseErrorDetails {
-                e: ParseError::UnnecessaryLayer,
-                m: "u3".to_string()
+                e: ParseError::InvalidLayer,
+                m: "m3"
             }
         );
     }

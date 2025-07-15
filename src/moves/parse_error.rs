@@ -22,12 +22,12 @@ impl fmt::Display for ParseError {
 }
 
 #[derive(Debug, PartialEq, Eq)]
-pub struct ParseErrorDetails {
+pub struct ParseErrorDetails<'a> {
     pub e: ParseError,
-    pub m: String
+    pub m: &'a str
 }
 
-impl fmt::Display for ParseErrorDetails {
+impl fmt::Display for ParseErrorDetails<'_> {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         write!(f, "At {}: {}", self.m, self.e)
     }
