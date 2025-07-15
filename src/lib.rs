@@ -6,7 +6,7 @@ use std::collections::HashMap;
 
 use tile_color::TileColor;
 use face::Face::{self, *};
-use moves::Move::{self, *};
+use moves::Move;
 
 use Direction::*;
 
@@ -36,31 +36,31 @@ impl Cube {
 
     pub fn do_move(&mut self, action: &Move) {
         match action {
-            U  => self.turn_u(),
-            Up => self.turn_u_prime(),
-            D  => self.turn_d(),
-            Dp => self.turn_d_prime(),
-            R  => self.turn_r(),
-            Rp => self.turn_r_prime(),
-            L  => self.turn_l(),
-            Lp => self.turn_l_prime(),
-            F  => self.turn_f(),
-            Fp => self.turn_f_prime(),
-            B  => self.turn_b(),
-            Bp => self.turn_b_prime(),
-            X  => self.rotate_x(),
-            Xp => self.rotate_x_prime(),
-            Y  => self.rotate_y(),
-            Yp => self.rotate_y_prime(),
-            Z  => self.rotate_z(),
-            Zp => self.rotate_z_prime(),
+            Move::U  => self.turn_u(),
+            Move::Up => self.turn_u_prime(),
+            Move::D  => self.turn_d(),
+            Move::Dp => self.turn_d_prime(),
+            Move::R  => self.turn_r(),
+            Move::Rp => self.turn_r_prime(),
+            Move::L  => self.turn_l(),
+            Move::Lp => self.turn_l_prime(),
+            Move::F  => self.turn_f(),
+            Move::Fp => self.turn_f_prime(),
+            Move::B  => self.turn_b(),
+            Move::Bp => self.turn_b_prime(),
+            Move::X  => self.rotate_x(),
+            Move::Xp => self.rotate_x_prime(),
+            Move::Y  => self.rotate_y(),
+            Move::Yp => self.rotate_y_prime(),
+            Move::Z  => self.rotate_z(),
+            Move::Zp => self.rotate_z_prime(),
 
-            M(layer)  => self.slice_m(*layer as usize),
-            Mp(layer) => self.slice_m_prime(*layer as usize),
-            E(layer)  => self.slice_e(*layer as usize),
-            Ep(layer) => self.slice_e_prime(*layer as usize),
-            S(layer)  => self.slice_s(*layer as usize),
-            Sp(layer) => self.slice_s_prime(*layer as usize),
+            Move::M(layer)  => self.slice_m(*layer as usize),
+            Move::Mp(layer) => self.slice_m_prime(*layer as usize),
+            Move::E(layer)  => self.slice_e(*layer as usize),
+            Move::Ep(layer) => self.slice_e_prime(*layer as usize),
+            Move::S(layer)  => self.slice_s(*layer as usize),
+            Move::Sp(layer) => self.slice_s_prime(*layer as usize),
         }
     }
 
