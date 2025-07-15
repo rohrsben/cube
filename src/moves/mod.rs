@@ -5,8 +5,6 @@ use regex::Regex;
 
 use parse_error::*;
 
-use Move::*;
-
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub enum Move {
     // turns
@@ -31,20 +29,20 @@ pub enum Move {
 impl fmt::Display for Move {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         match *self {
-            U => write!(f, "U"), Up => write!(f, "U'"),
-            D => write!(f, "D"), Dp => write!(f, "D'"),
-            R => write!(f, "R"), Rp => write!(f, "R'"),
-            L => write!(f, "L"), Lp => write!(f, "L'"),
-            F => write!(f, "F"), Fp => write!(f, "F'"),
-            B => write!(f, "B"), Bp => write!(f, "B'"),
+            Move::U => write!(f, "U"), Move::Up => write!(f, "U'"),
+            Move::D => write!(f, "D"), Move::Dp => write!(f, "D'"),
+            Move::R => write!(f, "R"), Move::Rp => write!(f, "R'"),
+            Move::L => write!(f, "L"), Move::Lp => write!(f, "L'"),
+            Move::F => write!(f, "F"), Move::Fp => write!(f, "F'"),
+            Move::B => write!(f, "B"), Move::Bp => write!(f, "B'"),
 
-            X => write!(f, "X"), Xp => write!(f, "X'"),
-            Y => write!(f, "Y"), Yp => write!(f, "Y'"),
-            Z => write!(f, "Z"), Zp => write!(f, "Z'"),
+            Move::X => write!(f, "X"), Move::Xp => write!(f, "X'"),
+            Move::Y => write!(f, "Y"), Move::Yp => write!(f, "Y'"),
+            Move::Z => write!(f, "Z"), Move::Zp => write!(f, "Z'"),
 
-            M(_) => write!(f, "M"), Mp(_) => write!(f, "M'"),
-            E(_) => write!(f, "E"), Ep(_) => write!(f, "E'"),
-            S(_) => write!(f, "S"), Sp(_) => write!(f, "S'"),
+            Move::M(_) => write!(f, "M"), Move::Mp(_) => write!(f, "M'"),
+            Move::E(_) => write!(f, "E"), Move::Ep(_) => write!(f, "E'"),
+            Move::S(_) => write!(f, "S"), Move::Sp(_) => write!(f, "S'"),
         }
     }
 }
