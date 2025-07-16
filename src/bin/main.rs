@@ -35,20 +35,20 @@ fn main() {
         if args.panic {
             println!("Errors:");
             for e in errors {
-                println!(" - {}", e);
+                println!(" - {e}");
             }
             panic!();
         } else {
             println!("Skipping invalid moves:");
             for e in errors {
-                println!(" - {}", e);
+                println!(" - {e}");
             }
         }
     }
 
     if !args.quiet { cube.pretty_print(); }
 
-    let line = "=".repeat(args.size as usize *4 + 2);
+    let line = "=".repeat(args.size *4 + 2);
 
     loop {
         for m in &pattern {

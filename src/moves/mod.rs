@@ -47,7 +47,7 @@ impl fmt::Display for Move {
     }
 }
 
-const REGEX: &'static str = r"(?<c>\d*)(?<a>[udrlfbxyzmesUDRLFBXYZMES]'?)(?<l>\d*)";
+const REGEX: &str = r"(?<c>\d*)(?<a>[udrlfbxyzmesUDRLFBXYZMES]'?)(?<l>\d*)";
 
 impl Move {
     pub fn parse_moves<'a>(pattern: &'a str, size: usize) -> (Vec<Self>, Vec<ParseErrorDetails<'a>>) {
