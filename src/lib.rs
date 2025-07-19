@@ -2,9 +2,7 @@ mod tile_color;
 mod face;
 pub mod moves;
 
-use std::collections::HashMap;
-
-use tile_color::TileColor;
+use tile_color::TileColor::{self, *};
 use face::Face::{self, *};
 use moves::Move;
 
@@ -15,23 +13,27 @@ enum Direction {
     Counter
 }
 
+#[derive(Debug, PartialEq)]
 pub struct Cube {
-    size: usize,
-    sides: HashMap<Face, Vec<Vec<TileColor>>>
+    size:   usize,
+    top:    Vec<Vec<TileColor>>,
+    left:   Vec<Vec<TileColor>>,
+    front:  Vec<Vec<TileColor>>,
+    right:  Vec<Vec<TileColor>>,
+    back:   Vec<Vec<TileColor>>,
+    bottom: Vec<Vec<TileColor>>,
 }
 
 impl Cube {
     pub fn new(size: usize) -> Self {
-        let mut sides = HashMap::new();
+        let top    = vec![vec![Face::Top.color();    size]; size];
+        let left   = vec![vec![Face::Left.color();   size]; size];
+        let front  = vec![vec![Face::Front.color();  size]; size];
+        let right  = vec![vec![Face::Right.color();  size]; size];
+        let back   = vec![vec![Face::Back.color();   size]; size];
+        let bottom = vec![vec![Face::Bottom.color(); size]; size];
 
-        for face in Face::as_vec() {
-            sides.insert(face, vec![vec![face.color(); size]; size]);
-        }
-
-        Self {
-            size,
-            sides
-        }
+        Self { size, top, left, front, right, back, bottom }
     }
 
     pub fn do_move(&mut self, action: &Move) {
@@ -48,6 +50,7 @@ impl Cube {
             Move::Fp => self.turn_f_prime(),
             Move::B  => self.turn_b(),
             Move::Bp => self.turn_b_prime(),
+
             Move::X  => self.rotate_x(),
             Move::Xp => self.rotate_x_prime(),
             Move::Y  => self.rotate_y(),
@@ -67,7 +70,8 @@ impl Cube {
     pub fn check(&self) -> bool {
         for face in Face::as_vec() {
             let face_color = face.color();
-            for row in self.sides.get(&face).unwrap() {
+
+            for row in self.get_face(face) {
                 for tile in row {
                     if *tile != face_color { return false; }
                 }
@@ -78,62 +82,63 @@ impl Cube {
     }
 
     pub fn pretty_print(&self) {
-        let spacer = " ".repeat(self.size + 1);
+        let spacer = " ".repeat(self.size);
+
         // top layer
         for row in 0..self.size {
+            let top = self.top[row].iter().map(|t| t.to_string()).collect::<String>();
 
-            print!("  {spacer}");
-
-            for tile in self.get_row(Top, row).iter() {
-                print!("{}", tile.to_string())
-            }
-
-            println!();
+            println!("  {spacer} {top}");
         }
 
         println!();
 
         // middle layer
         for row in 0..self.size {
-            print!("  ");
+            let left =   self.left[row].iter().map(|t| t.to_string()).collect::<String>();
+            let front = self.front[row].iter().map(|t| t.to_string()).collect::<String>();
+            let right = self.right[row].iter().map(|t| t.to_string()).collect::<String>();
+            let back =   self.back[row].iter().map(|t| t.to_string()).collect::<String>();
 
-            for tile in self.get_row(Left, row).iter() {
-                print!("{}", tile.to_string());
-            }
-            print!(" ");
-            for tile in self.get_row(Front, row).iter() {
-                print!("{}", tile.to_string());
-            }
-            print!(" ");
-            for tile in self.get_row(Right, row).iter() {
-                print!("{}", tile.to_string());
-            }
-            print!(" ");
-            for tile in self.get_row(Back, row).iter() {
-                print!("{}", tile.to_string());
-            }
-
-            println!();
+            println!("  {left} {front} {right} {back}");
         }
 
         println!();
 
         // bottom layer
         for row in 0..self.size {
-            print!("  {spacer}");
+            let bottom = self.bottom[row].iter().map(|t| t.to_string()).collect::<String>();
 
-            for tile in self.get_row(Bottom, row).iter() {
-                print!("{}", tile.to_string());
-            }
-            
-            println!();
+            println!("  {spacer} {bottom}");
+        }
+    }
+
+    fn get_face(&self, face: Face) -> &Vec<Vec<TileColor>> {
+        match face {
+            Face::Top    => &self.top,
+            Face::Left   => &self.left,
+            Face::Front  => &self.front,
+            Face::Right  => &self.right,
+            Face::Back   => &self.back,
+            Face::Bottom => &self.bottom
+        }
+    }
+
+    fn get_face_mut(&mut self, face: Face) -> &mut Vec<Vec<TileColor>> {
+        match face {
+            Face::Top    => &mut self.top,
+            Face::Left   => &mut self.left,
+            Face::Front  => &mut self.front,
+            Face::Right  => &mut self.right,
+            Face::Back   => &mut self.back,
+            Face::Bottom => &mut self.bottom
         }
     }
 
     fn get_col(&self, face: Face, col: usize) -> Vec<TileColor> {
         let mut column: Vec<TileColor> = Vec::new();
 
-        for row in self.sides.get(&face).unwrap().iter() {
+        for row in self.get_face(face).iter() {
             column.push(row[col]);
         }
 
@@ -141,18 +146,18 @@ impl Cube {
     }
 
     fn get_row(&self, face: Face, row: usize) -> Vec<TileColor> {
-        self.sides.get(&face).unwrap()[row].clone()
+        self.get_face(face)[row].clone()
     }
 
     fn set_col(&mut self, face: Face, col: usize, new: Vec<TileColor>) {
-        let current_face = self.sides.get_mut(&face).unwrap();
+        let current_face = self.get_face_mut(face);
         for (row, color) in new.iter().enumerate() {
             current_face[row][col] = *color;
         }
     }
 
     fn set_row(&mut self, face: Face, row: usize, new: Vec<TileColor>) {
-        let current_face = self.sides.get_mut(&face).unwrap();
+        let current_face = self.get_face_mut(face);
         current_face[row] = new;
     }
 
@@ -392,5 +397,195 @@ impl Cube {
         self.aboutface(Back, Counter);
 
         self.slice_s(self.size - 1);
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn new_correctness_3() {
+        let result = Cube::new(3);
+        let expected = Cube {
+            size:   3,
+            top:    vec![vec![Green;  3]; 3],
+            left:   vec![vec![Red;    3]; 3],
+            front:  vec![vec![White;  3]; 3],
+            right:  vec![vec![Orange; 3]; 3],
+            back:   vec![vec![Yellow; 3]; 3],
+            bottom: vec![vec![Blue;   3]; 3],
+        };
+
+        assert_eq!(result, expected);
+    }
+
+    #[test]
+    fn new_correctness_5() {
+        let result = Cube::new(5);
+        let expected = Cube {
+            size:   5,
+            top:    vec![vec![Green;  5]; 5],
+            left:   vec![vec![Red;    5]; 5],
+            front:  vec![vec![White;  5]; 5],
+            right:  vec![vec![Orange; 5]; 5],
+            back:   vec![vec![Yellow; 5]; 5],
+            bottom: vec![vec![Blue;   5]; 5],
+        };
+
+        assert_eq!(result, expected);
+    }
+
+    #[test]
+    fn check_new() {
+        let new_cube = Cube::new(3);
+
+        assert!(new_cube.check());
+    }
+
+    #[test]
+    fn check_rotated() {
+        // Y rotation
+        let rotated_cube = Cube {
+            size: 3,
+            top:    vec![vec![Green;  3]; 3],
+            left:   vec![vec![White;  3]; 3],
+            front:  vec![vec![Orange; 3]; 3],
+            right:  vec![vec![Yellow; 3]; 3],
+            back:   vec![vec![Red;    3]; 3],
+            bottom: vec![vec![Blue;   3]; 3],
+        };
+
+        assert!(!rotated_cube.check());
+    }
+
+    #[test]
+    fn check_slightly_off() {
+        let slightly_off = Cube {
+            size: 3,
+            top: vec![
+                vec![Green, Green, Green],
+                vec![Green, Green, Green],
+                vec![Green, Green, White],
+            ],
+            left: vec![vec![Red; 3]; 3],
+            front: vec![vec![White; 3]; 3],
+            right: vec![vec![Orange; 3]; 3],
+            back: vec![vec![Yellow; 3]; 3],
+            bottom: vec![vec![Blue; 3]; 3],
+        };
+
+        assert!(!slightly_off.check());
+    }
+
+    #[test]
+    fn get_col_correctness() {
+        let mixed2 = Cube {
+            size: 2,
+            top: vec![
+                vec![Green, Blue],
+                vec![Blue, Green],
+            ],
+            left: vec![
+                vec![Red, Orange],
+                vec![Orange, Red],
+            ],
+            front: vec![
+                vec![White, Yellow],
+                vec![Yellow, White],
+            ],
+            right: vec![
+                vec![Orange, Red],
+                vec![Red, Orange],
+            ],
+            back: vec![
+                vec![Yellow, White],
+                vec![White, Yellow],
+            ],
+            bottom: vec![
+                vec![Blue, Green],
+                vec![Green, Blue],
+            ],
+        };
+
+        let result = mixed2.get_col(Front, 0);
+        let expected = vec![White, Yellow];
+        assert_eq!(result, expected);
+        
+        let result = mixed2.get_col(Front, 1);
+        let expected = vec![Yellow, White];
+        assert_eq!(result, expected);
+    }
+
+    #[test]
+    fn get_row_correctness() {
+        let mixed2 = Cube {
+            size: 2,
+            top: vec![
+                vec![Green, Blue],
+                vec![Blue, Green],
+            ],
+            left: vec![
+                vec![Red, Orange],
+                vec![Orange, Red],
+            ],
+            front: vec![
+                vec![White, Yellow],
+                vec![Yellow, White],
+            ],
+            right: vec![
+                vec![Orange, Red],
+                vec![Red, Orange],
+            ],
+            back: vec![
+                vec![Yellow, White],
+                vec![White, Yellow],
+            ],
+            bottom: vec![
+                vec![Blue, Green],
+                vec![Green, Blue],
+            ],
+        };
+
+        let result = mixed2.get_row(Bottom, 0);
+        let expected = vec![Blue, Green];
+        assert_eq!(result, expected);
+
+        let result = mixed2.get_row(Bottom, 1);
+        let expected = vec![Green, Blue];
+        assert_eq!(result, expected);
+    }
+
+    #[test]
+    fn set_col_correctness() {
+        let new_col = vec![Red, Green];
+        let mut result = Cube::new(2);
+        result.set_col(Front, 0, new_col);
+
+        let expected = Cube {
+            size: 2,
+            top: vec![vec![Green; 2]; 2],
+            left: vec![vec![Red; 2]; 2],
+            front: vec![
+                vec![Red, White],
+                vec![Green, White],
+            ],
+            right: vec![vec![Orange; 2]; 2],
+            back: vec![vec![Yellow; 2]; 2],
+            bottom: vec![vec![Blue; 2]; 2],
+        };
+
+        assert_eq!(result, expected);
+
+        let new_col = vec![White; 2];
+        result.set_col(Front, 0, new_col);
+
+        assert_eq!(result, Cube::new(2));
+    }
+
+    #[test]
+    fn set_row_correctness() {
+        let mut result = Cube::new(2);
+        
     }
 }
