@@ -58,12 +58,12 @@ fn main() {
                 move_count += 1;
             }
 
-            if !args.quiet { println!("{move_count:=<5}{line}{m}"); }
+            if !args.quiet { println!("{:=<5}{}{}", move_count + rotations, line, m); }
 
             cube.do_move(m);
 
             if !args.quiet { cube.pretty_print(); }
-            if !args.quiet { println!("{move_count:=<5}{line}{m}"); }
+            if !args.quiet { println!("{:=<5}{}{}", move_count + rotations, line, m); }
         }
 
         repetitions += 1;
