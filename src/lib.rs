@@ -1448,4 +1448,418 @@ mod tests {
 
         check_eq(&result, &result_prime);
     }
+
+    #[test]
+    fn rotate_x() {
+        let mut result = Cube::new(2);
+        result.rotate_x();
+        result.rotate_x();
+
+        let expected = Cube {
+            size: 2,
+            top: vec![vec![Blue; 2]; 2],
+            left: vec![vec![Red; 2]; 2],
+            front: vec![vec![Yellow; 2]; 2],
+            right: vec![vec![Orange; 2]; 2],
+            bottom: vec![vec![Green; 2]; 2],
+            back: vec![vec![White; 2]; 2],
+        };
+
+        check_eq(&result, &expected);
+    }
+
+    #[test]
+    fn rotate_x_prime() {
+        let mut result = Cube::new(2);
+        result.rotate_x_prime();
+        result.rotate_x_prime();
+
+        let expected = Cube {
+            size: 2,
+            top: vec![vec![Blue; 2]; 2],
+            left: vec![vec![Red; 2]; 2],
+            front: vec![vec![Yellow; 2]; 2],
+            right: vec![vec![Orange; 2]; 2],
+            bottom: vec![vec![Green; 2]; 2],
+            back: vec![vec![White; 2]; 2],
+        };
+
+        check_eq(&result, &expected);
+    }
+
+    #[test]
+    fn rotate_y() {
+        let mut result = Cube::new(2);
+        result.rotate_y();
+        result.rotate_y();
+
+        let expected = Cube {
+            size: 2,
+            top: vec![vec![Green; 2]; 2],
+            left: vec![vec![Orange; 2]; 2],
+            front: vec![vec![Yellow; 2]; 2],
+            right: vec![vec![Red; 2]; 2],
+            bottom: vec![vec![Blue; 2]; 2],
+            back: vec![vec![White; 2]; 2],
+        };
+
+        check_eq(&result, &expected);
+    }
+
+    #[test]
+    fn rotate_y_prime() {
+        let mut result = Cube::new(2);
+        result.rotate_y_prime();
+        result.rotate_y_prime();
+
+        let expected = Cube {
+            size: 2,
+            top: vec![vec![Green; 2]; 2],
+            left: vec![vec![Orange; 2]; 2],
+            front: vec![vec![Yellow; 2]; 2],
+            right: vec![vec![Red; 2]; 2],
+            bottom: vec![vec![Blue; 2]; 2],
+            back: vec![vec![White; 2]; 2],
+        };
+
+        check_eq(&result, &expected);
+    }
+
+    #[test]
+    fn rotate_z() {
+        let mut result = Cube::new(2);
+        result.rotate_z();
+        result.rotate_z();
+
+        let expected = Cube {
+            size: 2,
+            top: vec![vec![Blue; 2]; 2],
+            left: vec![vec![Orange; 2]; 2],
+            front: vec![vec![White; 2]; 2],
+            right: vec![vec![Red; 2]; 2],
+            bottom: vec![vec![Green; 2]; 2],
+            back: vec![vec![Yellow; 2]; 2],
+        };
+
+        check_eq(&result, &expected);
+    }
+
+    #[test]
+    fn rotate_z_prime() {
+        let mut result = Cube::new(2);
+        result.rotate_z_prime();
+        result.rotate_z_prime();
+
+        let expected = Cube {
+            size: 2,
+            top: vec![vec![Blue; 2]; 2],
+            left: vec![vec![Orange; 2]; 2],
+            front: vec![vec![White; 2]; 2],
+            right: vec![vec![Red; 2]; 2],
+            bottom: vec![vec![Green; 2]; 2],
+            back: vec![vec![Yellow; 2]; 2],
+        };
+
+        check_eq(&result, &expected);
+    }
+
+    #[test]
+    fn turn_u() {
+        let mut result = Cube::new(2);
+        result.turn_u();
+        result.turn_u();
+
+        let expected = Cube {
+            size: 2,
+            top: vec![vec![Green; 2]; 2],
+            left: vec![
+                vec![Orange; 2],
+                vec![Red; 2],
+            ],
+            front: vec![
+                vec![Yellow; 2],
+                vec![White; 2],
+            ],
+            right: vec![
+                vec![Red; 2],
+                vec![Orange; 2],
+            ],
+            bottom: vec![vec![Blue; 2]; 2],
+            back: vec![
+                vec![White; 2],
+                vec![Yellow; 2],
+            ],
+        };
+
+        check_eq(&result, &expected);
+    }
+
+    #[test]
+    fn turn_u_prime() {
+        let mut result = Cube::new(2);
+        result.turn_u_prime();
+        result.turn_u_prime();
+
+        let expected = Cube {
+            size: 2,
+            top: vec![vec![Green; 2]; 2],
+            left: vec![
+                vec![Orange; 2],
+                vec![Red; 2],
+            ],
+            front: vec![
+                vec![Yellow; 2],
+                vec![White; 2],
+            ],
+            right: vec![
+                vec![Red; 2],
+                vec![Orange; 2],
+            ],
+            bottom: vec![vec![Blue; 2]; 2],
+            back: vec![
+                vec![White; 2],
+                vec![Yellow; 2],
+            ],
+        };
+
+        check_eq(&result, &expected);
+    }
+
+    #[test]
+    fn turn_d() {
+        let mut result = Cube::new(2);
+        result.turn_d();
+        result.turn_d();
+
+        let expected = Cube {
+            size: 2,
+            top: vec![vec![Green; 2]; 2],
+            left: vec![
+                vec![Red; 2],
+                vec![Orange; 2],
+            ],
+            front: vec![
+                vec![White; 2],
+                vec![Yellow; 2],
+            ],
+            right: vec![
+                vec![Orange; 2],
+                vec![Red; 2],
+            ],
+            bottom: vec![vec![Blue; 2]; 2],
+            back: vec![
+                vec![Yellow; 2],
+                vec![White; 2],
+            ],
+        };
+
+        check_eq(&result, &expected);
+    }
+
+    #[test]
+    fn turn_d_prime() {
+        let mut result = Cube::new(2);
+        result.turn_d_prime();
+        result.turn_d_prime();
+
+        let expected = Cube {
+            size: 2,
+            top: vec![vec![Green; 2]; 2],
+            left: vec![
+                vec![Red; 2],
+                vec![Orange; 2],
+            ],
+            front: vec![
+                vec![White; 2],
+                vec![Yellow; 2],
+            ],
+            right: vec![
+                vec![Orange; 2],
+                vec![Red; 2],
+            ],
+            bottom: vec![vec![Blue; 2]; 2],
+            back: vec![
+                vec![Yellow; 2],
+                vec![White; 2],
+            ],
+        };
+
+        check_eq(&result, &expected);
+    }
+
+    #[test]
+    fn turn_r() {
+        let mut result = Cube::new(2);
+        result.turn_r();
+        result.turn_r();
+
+        let expected = Cube {
+            size: 2,
+            top: vec![vec![Green, Blue]; 2],
+            left: vec![vec![Red; 2]; 2],
+            front: vec![vec![White, Yellow]; 2],
+            right: vec![vec![Orange; 2]; 2],
+            bottom: vec![vec![Blue, Green]; 2],
+            back: vec![vec![White, Yellow]; 2],
+        };
+
+        check_eq(&result, &expected);
+    }
+
+    #[test]
+    fn turn_r_prime() {
+        let mut result = Cube::new(2);
+        result.turn_r_prime();
+        result.turn_r_prime();
+
+        let expected = Cube {
+            size: 2,
+            top: vec![vec![Green, Blue]; 2],
+            left: vec![vec![Red; 2]; 2],
+            front: vec![vec![White, Yellow]; 2],
+            right: vec![vec![Orange; 2]; 2],
+            bottom: vec![vec![Blue, Green]; 2],
+            back: vec![vec![White, Yellow]; 2],
+        };
+
+        check_eq(&result, &expected);
+    }
+
+    #[test]
+    fn turn_l() {
+        let mut result = Cube::new(2);
+        result.turn_l();
+        result.turn_l();
+
+        let expected = Cube {
+            size: 2,
+            top: vec![vec![Blue, Green]; 2],
+            left: vec![vec![Red; 2]; 2],
+            front: vec![vec![Yellow, White]; 2],
+            right: vec![vec![Orange; 2]; 2],
+            bottom: vec![vec![Green, Blue]; 2],
+            back: vec![vec![Yellow, White]; 2],
+        };
+
+        check_eq(&result, &expected);
+    }
+
+    #[test]
+    fn turn_l_prime() {
+        let mut result = Cube::new(2);
+        result.turn_l_prime();
+        result.turn_l_prime();
+
+        let expected = Cube {
+            size: 2,
+            top: vec![vec![Blue, Green]; 2],
+            left: vec![vec![Red; 2]; 2],
+            front: vec![vec![Yellow, White]; 2],
+            right: vec![vec![Orange; 2]; 2],
+            bottom: vec![vec![Green, Blue]; 2],
+            back: vec![vec![Yellow, White]; 2],
+        };
+
+        check_eq(&result, &expected);
+    }
+
+    #[test]
+    fn turn_f() {
+        let mut result = Cube::new(2);
+        result.turn_f();
+        result.turn_f();
+
+        let expected = Cube {
+            size: 2,
+            top: vec![
+                vec![Green; 2],
+                vec![Blue; 2],
+            ],
+            left: vec![vec![Red, Orange]; 2],
+            front: vec![vec![White; 2]; 2],
+            right: vec![vec![Red, Orange]; 2],
+            bottom: vec![
+                vec![Green; 2],
+                vec![Blue; 2],
+            ],
+            back: vec![vec![Yellow; 2]; 2],
+        };
+
+        check_eq(&result, &expected);
+    }
+
+    #[test]
+    fn turn_f_prime() {
+        let mut result = Cube::new(2);
+        result.turn_f_prime();
+        result.turn_f_prime();
+
+        let expected = Cube {
+            size: 2,
+            top: vec![
+                vec![Green; 2],
+                vec![Blue; 2],
+            ],
+            left: vec![vec![Red, Orange]; 2],
+            front: vec![vec![White; 2]; 2],
+            right: vec![vec![Red, Orange]; 2],
+            bottom: vec![
+                vec![Green; 2],
+                vec![Blue; 2],
+            ],
+            back: vec![vec![Yellow; 2]; 2],
+        };
+
+        check_eq(&result, &expected);
+    }
+
+    #[test]
+    fn turn_b() {
+        let mut result = Cube::new(2);
+        result.turn_b();
+        result.turn_b();
+
+        let expected = Cube {
+            size: 2,
+            top: vec![
+                vec![Blue; 2],
+                vec![Green; 2],
+            ],
+            left: vec![vec![Orange, Red]; 2],
+            front: vec![vec![White; 2]; 2],
+            right: vec![vec![Orange, Red]; 2],
+            bottom: vec![
+                vec![Blue; 2],
+                vec![Green; 2],
+            ],
+            back: vec![vec![Yellow; 2]; 2],
+        };
+
+        check_eq(&result, &expected);
+    }
+
+    #[test]
+    fn turn_b_prime() {
+        let mut result = Cube::new(2);
+        result.turn_b_prime();
+        result.turn_b_prime();
+
+        let expected = Cube {
+            size: 2,
+            top: vec![
+                vec![Blue; 2],
+                vec![Green; 2],
+            ],
+            left: vec![vec![Orange, Red]; 2],
+            front: vec![vec![White; 2]; 2],
+            right: vec![vec![Orange, Red]; 2],
+            bottom: vec![
+                vec![Blue; 2],
+                vec![Green; 2],
+            ],
+            back: vec![vec![Yellow; 2]; 2],
+        };
+
+        check_eq(&result, &expected);
+    }
 }

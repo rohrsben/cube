@@ -1,6 +1,8 @@
 from cube import cube_str
 
 slices = "mes"
+rotations = 'xyz'
+turns = 'udrlfb'
 
 cubes = {
     'm': {
@@ -81,7 +83,130 @@ cubes = {
             'bottom': 'b b g'
         })
     },
+
+    'x': cube_str(2, {
+        'top': 'b',
+        'left': 'r',
+        'front': 'y',
+        'right': 'o',
+        'bottom': 'g',
+        'back': 'w'
+    }),
+    'y': cube_str(2, {
+        'top': 'g',
+        'left': 'o',
+        'front': 'y',
+        'right': 'r',
+        'bottom': 'b',
+        'back': 'w'
+    }),
+    'z': cube_str(2, {
+        'top': 'b',
+        'left': 'o',
+        'front': 'w',
+        'right': 'r',
+        'bottom': 'g',
+        'back': 'y'
+    }),
+
+    'u': cube_str(2, {
+        'top': 'd',
+        'left': 'o r',
+        'front': 'y w',
+        'right': 'r o',
+        'bottom': 'd',
+        'back': 'w y'
+    }),
+    'd': cube_str(2, {
+        'top': 'd',
+        'left': 'r o',
+        'front': 'w y',
+        'right': 'o r',
+        'bottom': 'd',
+        'back': 'y w'
+    }),
+    'r': cube_str(2, {
+        'top': 'gb',
+        'left': 'd',
+        'front': 'wy',
+        'right': 'd',
+        'bottom': 'bg',
+        'back': 'wy'
+    }),
+    'l': cube_str(2, {
+        'top': 'bg',
+        'left': 'd',
+        'front': 'yw',
+        'right': 'd',
+        'bottom': 'gb',
+        'back': 'yw'
+    }),
+    'f': cube_str(2, {
+        'top': 'g b',
+        'left': 'ro',
+        'front': 'd',
+        'right': 'ro',
+        'bottom': 'g b',
+        'back': 'd'
+    }),
+    'b': cube_str(2, {
+        'top': 'b g',
+        'left': 'or',
+        'front': 'd',
+        'right': 'or',
+        'bottom': 'b g',
+        'back': 'd'
+    }),
 }
+
+def make_rotate(move, prime):
+    s = '    '
+    p_str = '_prime' if prime else ''
+
+    lines = [
+        f'{s}#[test]',
+        f'{s}fn rotate_{move}{p_str}() {{',
+
+        f'{s*2}let mut result = Cube::new(2);',
+        f'{s*2}result.rotate_{move}{p_str}();',
+        f'{s*2}result.rotate_{move}{p_str}();\n',
+
+        f'{s*2}let expected = Cube {{',
+        cubes[move],
+        f'{s*2}}};\n',
+
+        f'{s*2}check_eq(&result, &expected);',
+
+        f'{s}}}'
+    ]
+
+    for line in lines:
+        print(line)
+
+
+def make_turn(move, prime):
+    s = '    '
+    p_str = '_prime' if prime else ''
+
+    lines = [
+        f'{s}#[test]',
+        f'{s}fn turn_{move}{p_str}() {{',
+
+        f'{s*2}let mut result = Cube::new(2);',
+        f'{s*2}result.turn_{move}{p_str}();',
+        f'{s*2}result.turn_{move}{p_str}();\n',
+
+        f'{s*2}let expected = Cube {{',
+        cubes[move],
+        f'{s*2}}};\n',
+
+        f'{s*2}check_eq(&result, &expected);',
+
+        f'{s}}}'
+    ]
+
+    for line in lines:
+        print(line)
 
 def make_slice(move, prime, layer):
     s = '    '
@@ -151,12 +276,9 @@ def make_slice_combo(move):
         print(line)
 
 def print_variations(move):
-    for layer in [0, 2]:
-        for is_prime in [False, True]:
-            make_slice(move, is_prime, layer)
-            print()
+    for is_prime in [False, True]:
+        make_turn(move, is_prime)
+        print()
 
-    make_slice_combo(move)
-
-for m in slices:
+for m in turns:
     print_variations(m)
