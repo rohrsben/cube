@@ -1,2 +1,3 @@
 /target
 /.direnv
+/code_gen/__pycache__

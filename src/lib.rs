@@ -2,7 +2,7 @@ mod tile_color;
 mod face;
 pub mod moves;
 
-use tile_color::TileColor::{self, *};
+use tile_color::TileColor;
 use face::Face::{self, *};
 use moves::Move;
 
@@ -13,7 +13,7 @@ enum Direction {
     Counter
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct Cube {
     size:   usize,
     top:    Vec<Vec<TileColor>>,
@@ -403,9 +403,22 @@ impl Cube {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use TileColor::*;
+
+    fn check_eq(result: &Cube, expected: &Cube) {
+        if result != expected {
+            println!("Program produced:");
+            result.pretty_print();
+
+            println!("\nExpected:");
+            expected.pretty_print();
+
+            panic!()
+        }
+    }
 
     #[test]
-    fn new_correctness_3() {
+    fn new_3() {
         let result = Cube::new(3);
         let expected = Cube {
             size:   3,
@@ -417,11 +430,11 @@ mod tests {
             bottom: vec![vec![Blue;   3]; 3],
         };
 
-        assert_eq!(result, expected);
+        check_eq(&result, &expected);
     }
 
     #[test]
-    fn new_correctness_5() {
+    fn new_5() {
         let result = Cube::new(5);
         let expected = Cube {
             size:   5,
@@ -433,7 +446,7 @@ mod tests {
             bottom: vec![vec![Blue;   5]; 5],
         };
 
-        assert_eq!(result, expected);
+        check_eq(&result, &expected);
     }
 
     #[test]
@@ -479,7 +492,7 @@ mod tests {
     }
 
     #[test]
-    fn get_col_correctness() {
+    fn get_col() {
         let mixed2 = Cube {
             size: 2,
             top: vec![
@@ -518,7 +531,7 @@ mod tests {
     }
 
     #[test]
-    fn get_row_correctness() {
+    fn get_row() {
         let mixed2 = Cube {
             size: 2,
             top: vec![
@@ -557,9 +570,10 @@ mod tests {
     }
 
     #[test]
-    fn set_col_correctness() {
-        let new_col = vec![Red, Green];
+    fn set_col() {
         let mut result = Cube::new(2);
+
+        let new_col = vec![Red, Green];
         result.set_col(Front, 0, new_col);
 
         let expected = Cube {
@@ -575,17 +589,863 @@ mod tests {
             bottom: vec![vec![Blue; 2]; 2],
         };
 
-        assert_eq!(result, expected);
-
-        let new_col = vec![White; 2];
-        result.set_col(Front, 0, new_col);
-
-        assert_eq!(result, Cube::new(2));
+        check_eq(&result, &expected);
     }
 
     #[test]
-    fn set_row_correctness() {
+    fn set_row() {
         let mut result = Cube::new(2);
-        
+
+        let new_row = vec![Red, Green];
+        result.set_row(Front, 0, new_row);
+
+        let expected = Cube {
+            size: 2,
+            top: vec![vec![Green; 2]; 2],
+            left: vec![vec![Red; 2]; 2],
+            front: vec![
+                vec![Red, Green],
+                vec![White, White],
+            ],
+            right: vec![vec![Orange; 2]; 2],
+            back: vec![vec![Yellow; 2]; 2],
+            bottom: vec![vec![Blue; 2]; 2],
+        };
+
+        check_eq(&result, &expected);
+    }
+
+    #[test]
+    fn aboutface_clock() {
+        let mut result = Cube {
+            size: 3,
+            top: vec![vec![Green; 3]; 3],
+            left: vec![vec![Red; 3]; 3],
+            front: vec![
+                vec![White, White, White],
+                vec![Red, Green, Blue],
+                vec![Red, Green, Blue],
+            ],
+            right: vec![vec![Orange; 3]; 3],
+            back: vec![vec![Yellow; 3]; 3],
+            bottom: vec![vec![Blue; 3]; 3],
+        };
+        let expected_mod4 = result.clone();
+
+        result.aboutface(Front, Clock);
+
+        let expected = Cube {
+            size: 3,
+            top: vec![vec![Green; 3]; 3],
+            left: vec![vec![Red; 3]; 3],
+            front: vec![
+                vec![Red, Red, White],
+                vec![Green, Green, White],
+                vec![Blue, Blue, White],
+            ],
+            right: vec![vec![Orange; 3]; 3],
+            back: vec![vec![Yellow; 3]; 3],
+            bottom: vec![vec![Blue; 3]; 3],
+        };
+
+        check_eq(&result, &expected);
+
+        result.aboutface(Front, Clock);
+        result.aboutface(Front, Clock);
+        result.aboutface(Front, Clock);
+
+        check_eq(&result, &expected_mod4);
+    }
+
+    #[test]
+    fn aboutface_counter() {
+        let mut result = Cube {
+            size: 3,
+            top: vec![vec![Green; 3]; 3],
+            left: vec![vec![Red; 3]; 3],
+            front: vec![
+                vec![White, White, White],
+                vec![Red, Green, Blue],
+                vec![Red, Green, Blue],
+            ],
+            right: vec![vec![Orange; 3]; 3],
+            back: vec![vec![Yellow; 3]; 3],
+            bottom: vec![vec![Blue; 3]; 3],
+        };
+        let expected_mod4 = result.clone();
+
+        result.aboutface(Front, Counter);
+
+        let expected = Cube {
+            size: 3,
+            top: vec![vec![Green; 3]; 3],
+            left: vec![vec![Red; 3]; 3],
+            front: vec![
+                vec![White, Blue, Blue],
+                vec![White, Green, Green],
+                vec![White, Red, Red],
+            ],
+            right: vec![vec![Orange; 3]; 3],
+            back: vec![vec![Yellow; 3]; 3],
+            bottom: vec![vec![Blue; 3]; 3],
+        };
+
+        check_eq(&result, &expected);
+
+        result.aboutface(Front, Counter);
+        result.aboutface(Front, Counter);
+        result.aboutface(Front, Counter);
+
+        check_eq(&result, &expected_mod4);
+    }
+
+    #[test]
+    fn aboutface_clock_and_counter() {
+        let mut result = Cube {
+            size: 3,
+            top: vec![vec![Green; 3]; 3],
+            left: vec![vec![Red; 3]; 3],
+            front: vec![
+                vec![White, White, White],
+                vec![Red, Green, Blue],
+                vec![Red, Green, Blue],
+            ],
+            right: vec![vec![Orange; 3]; 3],
+            back: vec![vec![Yellow; 3]; 3],
+            bottom: vec![vec![Blue; 3]; 3],
+        };
+
+        let expected = result.clone();
+
+        result.aboutface(Front, Clock);
+        result.aboutface(Front, Counter);
+
+        check_eq(&result, &expected);
+
+        let mut result_counter = result.clone();
+
+        result.aboutface(Front, Clock);
+        result.aboutface(Front, Clock);
+
+        result_counter.aboutface(Front, Counter);
+        result_counter.aboutface(Front, Counter);
+
+        check_eq(&result, &result_counter);
+    }
+
+    #[test]
+    fn slice_m_first() {
+        let mut result = Cube {
+            size: 3,
+            top: vec![vec![Green; 3]; 3],
+            left: vec![vec![Red; 3]; 3],
+            front: vec![
+                vec![Red, Blue, Green],
+                vec![Green, White, Yellow],
+                vec![Orange, Red, Blue],
+            ],
+            right: vec![vec![Orange; 3]; 3],
+            bottom: vec![vec![Blue; 3]; 3],
+            back: vec![vec![Yellow; 3]; 3],
+        };
+        let expected_mod4 = result.clone();
+
+        result.slice_m(0);
+        result.slice_m(0);
+
+        let expected = Cube {
+            size: 3,
+            top: vec![vec![Blue, Green, Green]; 3],
+            left: vec![vec![Red; 3]; 3],
+            front: vec![
+                vec![Yellow, Blue, Green],
+                vec![Yellow, White, Yellow],
+                vec![Yellow, Red, Blue],
+            ],
+            right: vec![vec![Orange; 3]; 3],
+            bottom: vec![vec![Green, Blue, Blue]; 3],
+            back: vec![
+                vec![Yellow, Yellow, Orange],
+                vec![Yellow, Yellow, Green],
+                vec![Yellow, Yellow, Red],
+            ],
+        };
+
+        check_eq(&result, &expected);
+
+        result.slice_m(0);
+        result.slice_m(0);
+
+        check_eq(&result, &expected_mod4);
+    }
+
+    #[test]
+    fn slice_m_prime_first() {
+        let mut result = Cube {
+            size: 3,
+            top: vec![vec![Green; 3]; 3],
+            left: vec![vec![Red; 3]; 3],
+            front: vec![
+                vec![Red, Blue, Green],
+                vec![Green, White, Yellow],
+                vec![Orange, Red, Blue],
+            ],
+            right: vec![vec![Orange; 3]; 3],
+            bottom: vec![vec![Blue; 3]; 3],
+            back: vec![vec![Yellow; 3]; 3],
+        };
+        let expected_mod4 = result.clone();
+
+        result.slice_m_prime(0);
+        result.slice_m_prime(0);
+
+        let expected = Cube {
+            size: 3,
+            top: vec![vec![Blue, Green, Green]; 3],
+            left: vec![vec![Red; 3]; 3],
+            front: vec![
+                vec![Yellow, Blue, Green],
+                vec![Yellow, White, Yellow],
+                vec![Yellow, Red, Blue],
+            ],
+            right: vec![vec![Orange; 3]; 3],
+            bottom: vec![vec![Green, Blue, Blue]; 3],
+            back: vec![
+                vec![Yellow, Yellow, Orange],
+                vec![Yellow, Yellow, Green],
+                vec![Yellow, Yellow, Red],
+            ],
+        };
+
+        check_eq(&result, &expected);
+
+        result.slice_m_prime(0);
+        result.slice_m_prime(0);
+
+        check_eq(&result, &expected_mod4);
+    }
+
+    #[test]
+    fn slice_m_last() {
+        let mut result = Cube {
+            size: 3,
+            top: vec![vec![Green; 3]; 3],
+            left: vec![vec![Red; 3]; 3],
+            front: vec![
+                vec![Red, Blue, Green],
+                vec![Green, White, Yellow],
+                vec![Orange, Red, Blue],
+            ],
+            right: vec![vec![Orange; 3]; 3],
+            bottom: vec![vec![Blue; 3]; 3],
+            back: vec![vec![Yellow; 3]; 3],
+        };
+        let expected_mod4 = result.clone();
+
+        result.slice_m(2);
+        result.slice_m(2);
+
+        let expected = Cube {
+            size: 3,
+            top: vec![vec![Green, Green, Blue]; 3],
+            left: vec![vec![Red; 3]; 3],
+            front: vec![
+                vec![Red, Blue, Yellow],
+                vec![Green, White, Yellow],
+                vec![Orange, Red, Yellow],
+            ],
+            right: vec![vec![Orange; 3]; 3],
+            bottom: vec![vec![Blue, Blue, Green]; 3],
+            back: vec![
+                vec![Blue, Yellow, Yellow],
+                vec![Yellow; 3],
+                vec![Green, Yellow, Yellow],
+            ],
+        };
+
+        check_eq(&result, &expected);
+
+        result.slice_m(2);
+        result.slice_m(2);
+
+        check_eq(&result, &expected_mod4);
+    }
+
+    #[test]
+    fn slice_m_prime_last() {
+        let mut result = Cube {
+            size: 3,
+            top: vec![vec![Green; 3]; 3],
+            left: vec![vec![Red; 3]; 3],
+            front: vec![
+                vec![Red, Blue, Green],
+                vec![Green, White, Yellow],
+                vec![Orange, Red, Blue],
+            ],
+            right: vec![vec![Orange; 3]; 3],
+            bottom: vec![vec![Blue; 3]; 3],
+            back: vec![vec![Yellow; 3]; 3],
+        };
+        let expected_mod4 = result.clone();
+
+        result.slice_m_prime(2);
+        result.slice_m_prime(2);
+
+        let expected = Cube {
+            size: 3,
+            top: vec![vec![Green, Green, Blue]; 3],
+            left: vec![vec![Red; 3]; 3],
+            front: vec![
+                vec![Red, Blue, Yellow],
+                vec![Green, White, Yellow],
+                vec![Orange, Red, Yellow],
+            ],
+            right: vec![vec![Orange; 3]; 3],
+            bottom: vec![vec![Blue, Blue, Green]; 3],
+            back: vec![
+                vec![Blue, Yellow, Yellow],
+                vec![Yellow; 3],
+                vec![Green, Yellow, Yellow],
+            ],
+        };
+
+        check_eq(&result, &expected);
+
+        result.slice_m_prime(2);
+        result.slice_m_prime(2);
+
+        check_eq(&result, &expected_mod4);
+    }
+
+    #[test]
+    fn slice_m_and_prime() {
+        let mut result = Cube {
+            size: 3,
+            top: vec![vec![Green; 3]; 3],
+            left: vec![vec![Red; 3]; 3],
+            front: vec![
+                vec![Red, Blue, Green],
+                vec![Green, White, Yellow],
+                vec![Orange, Red, Blue],
+            ],
+            right: vec![vec![Orange; 3]; 3],
+            bottom: vec![vec![Blue; 3]; 3],
+            back: vec![vec![Yellow; 3]; 3],
+        };
+
+        let expected = result.clone();
+
+        result.slice_m(0);
+        result.slice_m_prime(0);
+
+        check_eq(&result, &expected);
+
+        let mut result_prime = result.clone();
+
+        result.slice_m(0);
+        result.slice_m(0);
+
+        result_prime.slice_m_prime(0);
+        result_prime.slice_m_prime(0);
+
+        check_eq(&result, &result_prime);
+    }
+    #[test]
+    fn slice_e_first() {
+        let mut result = Cube {
+            size: 3,
+            top: vec![vec![Green; 3]; 3],
+            left: vec![vec![Red; 3]; 3],
+            front: vec![
+                vec![Red, Blue, Green],
+                vec![Green, White, Yellow],
+                vec![Orange, Red, Blue],
+            ],
+            right: vec![vec![Orange; 3]; 3],
+            bottom: vec![vec![Blue; 3]; 3],
+            back: vec![vec![Yellow; 3]; 3],
+        };
+        let expected_mod4 = result.clone();
+
+        result.slice_e(0);
+        result.slice_e(0);
+
+        let expected = Cube {
+            size: 3,
+            top: vec![vec![Green; 3]; 3],
+            left: vec![
+                vec![Orange; 3],
+                vec![Red; 3],
+                vec![Red; 3],
+            ],
+            front: vec![
+                vec![Yellow; 3],
+                vec![Green, White, Yellow],
+                vec![Orange, Red, Blue],
+            ],
+            right: vec![
+                vec![Red; 3],
+                vec![Orange; 3],
+                vec![Orange; 3],
+            ],
+            bottom: vec![vec![Blue; 3]; 3],
+            back: vec![
+                vec![Red, Blue, Green],
+                vec![Yellow; 3],
+                vec![Yellow; 3],
+            ],
+        };
+
+        check_eq(&result, &expected);
+
+        result.slice_e(0);
+        result.slice_e(0);
+
+        check_eq(&result, &expected_mod4);
+    }
+
+    #[test]
+    fn slice_e_prime_first() {
+        let mut result = Cube {
+            size: 3,
+            top: vec![vec![Green; 3]; 3],
+            left: vec![vec![Red; 3]; 3],
+            front: vec![
+                vec![Red, Blue, Green],
+                vec![Green, White, Yellow],
+                vec![Orange, Red, Blue],
+            ],
+            right: vec![vec![Orange; 3]; 3],
+            bottom: vec![vec![Blue; 3]; 3],
+            back: vec![vec![Yellow; 3]; 3],
+        };
+        let expected_mod4 = result.clone();
+
+        result.slice_e_prime(0);
+        result.slice_e_prime(0);
+
+        let expected = Cube {
+            size: 3,
+            top: vec![vec![Green; 3]; 3],
+            left: vec![
+                vec![Orange; 3],
+                vec![Red; 3],
+                vec![Red; 3],
+            ],
+            front: vec![
+                vec![Yellow; 3],
+                vec![Green, White, Yellow],
+                vec![Orange, Red, Blue],
+            ],
+            right: vec![
+                vec![Red; 3],
+                vec![Orange; 3],
+                vec![Orange; 3],
+            ],
+            bottom: vec![vec![Blue; 3]; 3],
+            back: vec![
+                vec![Red, Blue, Green],
+                vec![Yellow; 3],
+                vec![Yellow; 3],
+            ],
+        };
+
+        check_eq(&result, &expected);
+
+        result.slice_e_prime(0);
+        result.slice_e_prime(0);
+
+        check_eq(&result, &expected_mod4);
+    }
+
+    #[test]
+    fn slice_e_last() {
+        let mut result = Cube {
+            size: 3,
+            top: vec![vec![Green; 3]; 3],
+            left: vec![vec![Red; 3]; 3],
+            front: vec![
+                vec![Red, Blue, Green],
+                vec![Green, White, Yellow],
+                vec![Orange, Red, Blue],
+            ],
+            right: vec![vec![Orange; 3]; 3],
+            bottom: vec![vec![Blue; 3]; 3],
+            back: vec![vec![Yellow; 3]; 3],
+        };
+        let expected_mod4 = result.clone();
+
+        result.slice_e(2);
+        result.slice_e(2);
+
+        let expected = Cube {
+            size: 3,
+            top: vec![vec![Green; 3]; 3],
+            left: vec![
+                vec![Red; 3],
+                vec![Red; 3],
+                vec![Orange; 3],
+            ],
+            front: vec![
+                vec![Red, Blue, Green],
+                vec![Green, White, Yellow],
+                vec![Yellow, Yellow, Yellow],
+            ],
+            right: vec![
+                vec![Orange; 3],
+                vec![Orange; 3],
+                vec![Red; 3],
+            ],
+            bottom: vec![vec![Blue; 3]; 3],
+            back: vec![
+                vec![Yellow; 3],
+                vec![Yellow; 3],
+                vec![Orange, Red, Blue],
+            ],
+        };
+
+        check_eq(&result, &expected);
+
+        result.slice_e(2);
+        result.slice_e(2);
+
+        check_eq(&result, &expected_mod4);
+    }
+
+    #[test]
+    fn slice_e_prime_last() {
+        let mut result = Cube {
+            size: 3,
+            top: vec![vec![Green; 3]; 3],
+            left: vec![vec![Red; 3]; 3],
+            front: vec![
+                vec![Red, Blue, Green],
+                vec![Green, White, Yellow],
+                vec![Orange, Red, Blue],
+            ],
+            right: vec![vec![Orange; 3]; 3],
+            bottom: vec![vec![Blue; 3]; 3],
+            back: vec![vec![Yellow; 3]; 3],
+        };
+        let expected_mod4 = result.clone();
+
+        result.slice_e_prime(2);
+        result.slice_e_prime(2);
+
+        let expected = Cube {
+            size: 3,
+            top: vec![vec![Green; 3]; 3],
+            left: vec![
+                vec![Red; 3],
+                vec![Red; 3],
+                vec![Orange; 3],
+            ],
+            front: vec![
+                vec![Red, Blue, Green],
+                vec![Green, White, Yellow],
+                vec![Yellow, Yellow, Yellow],
+            ],
+            right: vec![
+                vec![Orange; 3],
+                vec![Orange; 3],
+                vec![Red; 3],
+            ],
+            bottom: vec![vec![Blue; 3]; 3],
+            back: vec![
+                vec![Yellow; 3],
+                vec![Yellow; 3],
+                vec![Orange, Red, Blue],
+            ],
+        };
+
+        check_eq(&result, &expected);
+
+        result.slice_e_prime(2);
+        result.slice_e_prime(2);
+
+        check_eq(&result, &expected_mod4);
+    }
+
+    #[test]
+    fn slice_e_and_prime() {
+        let mut result = Cube {
+            size: 3,
+            top: vec![vec![Green; 3]; 3],
+            left: vec![vec![Red; 3]; 3],
+            front: vec![
+                vec![Red, Blue, Green],
+                vec![Green, White, Yellow],
+                vec![Orange, Red, Blue],
+            ],
+            right: vec![vec![Orange; 3]; 3],
+            bottom: vec![vec![Blue; 3]; 3],
+            back: vec![vec![Yellow; 3]; 3],
+        };
+
+        let expected = result.clone();
+
+        result.slice_e(0);
+        result.slice_e_prime(0);
+
+        check_eq(&result, &expected);
+
+        let mut result_prime = result.clone();
+
+        result.slice_e(0);
+        result.slice_e(0);
+
+        result_prime.slice_e_prime(0);
+        result_prime.slice_e_prime(0);
+
+        check_eq(&result, &result_prime);
+    }
+    #[test]
+    fn slice_s_first() {
+        let mut result = Cube {
+            size: 3,
+            top: vec![vec![Green; 3]; 3],
+            left: vec![vec![Red; 3]; 3],
+            front: vec![vec![White; 3]; 3],
+            right: vec![
+                vec![Red, Blue, Green],
+                vec![Green, White, Yellow],
+                vec![Orange, Red, Blue],
+            ],
+            bottom: vec![vec![Blue; 3]; 3],
+            back: vec![vec![Yellow; 3]; 3],
+        };
+        let expected_mod4 = result.clone();
+
+        result.slice_s(0);
+        result.slice_s(0);
+
+        let expected = Cube {
+            size: 3,
+            top: vec![
+                vec![Green; 3],
+                vec![Green; 3],
+                vec![Blue; 3],
+            ],
+            left: vec![
+                vec![Red, Red, Orange],
+                vec![Red, Red, Green],
+                vec![Red; 3],
+            ],
+            front: vec![vec![White; 3]; 3],
+            right: vec![
+                vec![Red, Blue, Green],
+                vec![Red, White, Yellow],
+                vec![Red, Red, Blue],
+            ],
+            bottom: vec![
+                vec![Green; 3],
+                vec![Blue; 3],
+                vec![Blue; 3],
+            ],
+            back: vec![vec![Yellow; 3]; 3],
+        };
+
+        check_eq(&result, &expected);
+
+        result.slice_s(0);
+        result.slice_s(0);
+
+        check_eq(&result, &expected_mod4);
+    }
+
+    #[test]
+    fn slice_s_prime_first() {
+        let mut result = Cube {
+            size: 3,
+            top: vec![vec![Green; 3]; 3],
+            left: vec![vec![Red; 3]; 3],
+            front: vec![vec![White; 3]; 3],
+            right: vec![
+                vec![Red, Blue, Green],
+                vec![Green, White, Yellow],
+                vec![Orange, Red, Blue],
+            ],
+            bottom: vec![vec![Blue; 3]; 3],
+            back: vec![vec![Yellow; 3]; 3],
+        };
+        let expected_mod4 = result.clone();
+
+        result.slice_s_prime(0);
+        result.slice_s_prime(0);
+
+        let expected = Cube {
+            size: 3,
+            top: vec![
+                vec![Green; 3],
+                vec![Green; 3],
+                vec![Blue; 3],
+            ],
+            left: vec![
+                vec![Red, Red, Orange],
+                vec![Red, Red, Green],
+                vec![Red; 3],
+            ],
+            front: vec![vec![White; 3]; 3],
+            right: vec![
+                vec![Red, Blue, Green],
+                vec![Red, White, Yellow],
+                vec![Red, Red, Blue],
+            ],
+            bottom: vec![
+                vec![Green; 3],
+                vec![Blue; 3],
+                vec![Blue; 3],
+            ],
+            back: vec![vec![Yellow; 3]; 3],
+        };
+
+        check_eq(&result, &expected);
+
+        result.slice_s_prime(0);
+        result.slice_s_prime(0);
+
+        check_eq(&result, &expected_mod4);
+    }
+
+    #[test]
+    fn slice_s_last() {
+        let mut result = Cube {
+            size: 3,
+            top: vec![vec![Green; 3]; 3],
+            left: vec![vec![Red; 3]; 3],
+            front: vec![vec![White; 3]; 3],
+            right: vec![
+                vec![Red, Blue, Green],
+                vec![Green, White, Yellow],
+                vec![Orange, Red, Blue],
+            ],
+            bottom: vec![vec![Blue; 3]; 3],
+            back: vec![vec![Yellow; 3]; 3],
+        };
+        let expected_mod4 = result.clone();
+
+        result.slice_s(2);
+        result.slice_s(2);
+
+        let expected = Cube {
+            size: 3,
+            top: vec![
+                vec![Blue; 3],
+                vec![Green; 3],
+                vec![Green; 3],
+            ],
+            left: vec![
+                vec![Blue, Red, Red],
+                vec![Yellow, Red, Red],
+                vec![Green, Red, Red],
+            ],
+            front: vec![vec![White; 3]; 3],
+            right: vec![
+                vec![Red, Blue, Red],
+                vec![Green, White, Red],
+                vec![Orange, Red, Red],
+            ],
+            bottom: vec![
+                vec![Blue; 3],
+                vec![Blue; 3],
+                vec![Green; 3],
+            ],
+            back: vec![vec![Yellow; 3]; 3],
+        };
+
+        check_eq(&result, &expected);
+
+        result.slice_s(2);
+        result.slice_s(2);
+
+        check_eq(&result, &expected_mod4);
+    }
+
+    #[test]
+    fn slice_s_prime_last() {
+        let mut result = Cube {
+            size: 3,
+            top: vec![vec![Green; 3]; 3],
+            left: vec![vec![Red; 3]; 3],
+            front: vec![vec![White; 3]; 3],
+            right: vec![
+                vec![Red, Blue, Green],
+                vec![Green, White, Yellow],
+                vec![Orange, Red, Blue],
+            ],
+            bottom: vec![vec![Blue; 3]; 3],
+            back: vec![vec![Yellow; 3]; 3],
+        };
+        let expected_mod4 = result.clone();
+
+        result.slice_s_prime(2);
+        result.slice_s_prime(2);
+
+        let expected = Cube {
+            size: 3,
+            top: vec![
+                vec![Blue; 3],
+                vec![Green; 3],
+                vec![Green; 3],
+            ],
+            left: vec![
+                vec![Blue, Red, Red],
+                vec![Yellow, Red, Red],
+                vec![Green, Red, Red],
+            ],
+            front: vec![vec![White; 3]; 3],
+            right: vec![
+                vec![Red, Blue, Red],
+                vec![Green, White, Red],
+                vec![Orange, Red, Red],
+            ],
+            bottom: vec![
+                vec![Blue; 3],
+                vec![Blue; 3],
+                vec![Green; 3],
+            ],
+            back: vec![vec![Yellow; 3]; 3],
+        };
+
+        check_eq(&result, &expected);
+
+        result.slice_s_prime(2);
+        result.slice_s_prime(2);
+
+        check_eq(&result, &expected_mod4);
+    }
+
+    #[test]
+    fn slice_s_and_prime() {
+        let mut result = Cube {
+            size: 3,
+            top: vec![vec![Green; 3]; 3],
+            left: vec![vec![Red; 3]; 3],
+            front: vec![vec![White; 3]; 3],
+            right: vec![
+                vec![Red, Blue, Green],
+                vec![Green, White, Yellow],
+                vec![Orange, Red, Blue],
+            ],
+            bottom: vec![vec![Blue; 3]; 3],
+            back: vec![vec![Yellow; 3]; 3],
+        };
+
+        let expected = result.clone();
+
+        result.slice_s(0);
+        result.slice_s_prime(0);
+
+        check_eq(&result, &expected);
+
+        let mut result_prime = result.clone();
+
+        result.slice_s(0);
+        result.slice_s(0);
+
+        result_prime.slice_s_prime(0);
+        result_prime.slice_s_prime(0);
+
+        check_eq(&result, &result_prime);
     }
 }
