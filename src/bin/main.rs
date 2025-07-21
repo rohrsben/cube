@@ -1,5 +1,6 @@
-use clap::Parser;
+use std::process;
 
+use clap::Parser;
 use libcube::Cube;
 use libcube::moves::Move;
 
@@ -10,9 +11,9 @@ pub struct Args {
     #[arg(short, long, default_value_t = 3)]
     pub size: usize,
 
-    /// Panic on invalid pattern inputs
-    #[arg(short, long, default_value_t = false)]
-    pub panic: bool,
+    /// Exit on invalid pattern inputs
+    #[arg(long, default_value_t = false)]
+    pub strict: bool,
 
     /// Don't print the cube :(
     #[arg(short, long, default_value_t = false)]
@@ -32,12 +33,12 @@ fn main() {
     let (pattern, errors) = Move::parse_moves(&args.pattern, args.size);
 
     if !errors.is_empty() {
-        if args.panic {
+        if args.strict {
             println!("Errors:");
             for e in errors {
                 println!(" - {e}");
             }
-            panic!();
+            process::exit(1);
         } else {
             println!("Skipping invalid moves:");
             for e in errors {
