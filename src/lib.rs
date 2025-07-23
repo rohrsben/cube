@@ -25,6 +25,7 @@ pub struct Cube {
 }
 
 impl Cube {
+    /// Returns a new Cube instance of size `size`
     pub fn new(size: usize) -> Self {
         let top    = vec![vec![Face::Top.color();    size]; size];
         let left   = vec![vec![Face::Left.color();   size]; size];
@@ -36,6 +37,7 @@ impl Cube {
         Self { size, top, left, front, right, back, bottom }
     }
 
+    /// Performs the given Move, mutating the cube
     pub fn do_move(&mut self, action: Move) {
         match action {
             Move::U  => self.turn_u(),
@@ -67,6 +69,7 @@ impl Cube {
         }
     }
 
+    /// Verifies that the cube is equivalent to a Cube::new of the same size
     pub fn check(&self) -> bool {
         for face in Face::as_vec() {
             let face_color = face.color();
@@ -81,6 +84,12 @@ impl Cube {
         true
     }
 
+    /// Prints the cube unfolded into a cross net, arranged as
+    /// ```
+    ///   u
+    /// l f r b
+    ///   d
+    /// ```
     pub fn pretty_print(&self) {
         let spacer = " ".repeat(self.size);
 

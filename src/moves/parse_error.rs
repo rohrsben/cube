@@ -22,6 +22,8 @@ impl fmt::Display for ParseError {
 }
 
 #[derive(Debug, PartialEq, Eq)]
+/// Used in Move::parse_moves. Contains the parsing error that was encountered, and
+/// a string slice pointing to the substring that caused the error
 pub struct ParseErrorDetails<'a> {
     pub e: ParseError,
     pub m: &'a str

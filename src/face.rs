@@ -11,6 +11,7 @@ pub enum Face {
 }
 
 impl Face {
+    /// Returns the 'default' color for the given Face
     pub fn color(&self) -> TileColor {
         match self {
             Face::Front  => TileColor::White,
@@ -22,6 +23,7 @@ impl Face {
         }
     }
 
+    /// Convenience function for easy and consistent Face iteration
     pub fn as_vec() -> Vec<Face> {
         vec![Face::Front, Face::Top, Face::Right, Face::Left, Face::Bottom, Face::Back]
     }

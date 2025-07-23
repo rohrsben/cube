@@ -50,6 +50,9 @@ impl fmt::Display for Move {
 const REGEX: &str = r"(?<c>\d*)(?<a>[udrlfbxyzmesUDRLFBXYZMES]'?)(?<l>\d*)";
 
 impl Move {
+    /// Given a string, returns all matched and parseable Move notation substrings
+    /// as an in-order `Vec<Move>,` and all matched but improper substrings as an
+    /// in-order `Vec<ParseErrorDetails>`
     pub fn parse_moves(pattern: &str, size: usize) -> (Vec<Self>, Vec<ParseErrorDetails<'_>>) {
         let reg = Regex::new(REGEX).unwrap();
         let mut moves = Vec::new();
