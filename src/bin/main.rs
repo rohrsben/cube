@@ -61,7 +61,7 @@ fn main() {
 
             if !args.quiet { println!("{:=<5}{}{}", move_count + rotations, line, m); }
 
-            cube.do_move(m);
+            cube.do_move(*m);
 
             if !args.quiet { cube.pretty_print(); }
             if !args.quiet { println!("{:=<5}{}{}", move_count + rotations, line, m); }

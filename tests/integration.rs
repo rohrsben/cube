@@ -16,7 +16,7 @@ fn pattern_u_r() {
                 moves += 1;
             }
 
-            cube.do_move(m);
+            cube.do_move(*m);
         }
 
         reps += 1;
@@ -46,7 +46,7 @@ fn pattern_u_x() {
                 moves += 1;
             }
 
-            cube.do_move(m);
+            cube.do_move(*m);
         }
 
         reps += 1;

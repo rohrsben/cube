@@ -36,7 +36,7 @@ impl Cube {
         Self { size, top, left, front, right, back, bottom }
     }
 
-    pub fn do_move(&mut self, action: &Move) {
+    pub fn do_move(&mut self, action: Move) {
         match action {
             Move::U  => self.turn_u(),
             Move::Up => self.turn_u_prime(),
@@ -58,12 +58,12 @@ impl Cube {
             Move::Z  => self.rotate_z(),
             Move::Zp => self.rotate_z_prime(),
 
-            Move::M(layer)  => self.slice_m(*layer),
-            Move::Mp(layer) => self.slice_m_prime(*layer),
-            Move::E(layer)  => self.slice_e(*layer),
-            Move::Ep(layer) => self.slice_e_prime(*layer),
-            Move::S(layer)  => self.slice_s(*layer),
-            Move::Sp(layer) => self.slice_s_prime(*layer),
+            Move::M(layer)  => self.slice_m(layer),
+            Move::Mp(layer) => self.slice_m_prime(layer),
+            Move::E(layer)  => self.slice_e(layer),
+            Move::Ep(layer) => self.slice_e_prime(layer),
+            Move::S(layer)  => self.slice_s(layer),
+            Move::Sp(layer) => self.slice_s_prime(layer),
         }
     }
 
