@@ -85,7 +85,7 @@ impl Cube {
     }
 
     /// Prints the cube unfolded into a cross net, arranged as
-    /// ```
+    /// ```compile_fail
     ///   u
     /// l f r b
     ///   d
